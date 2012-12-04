@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Backend
  * @subpackage  unit_tests
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -130,7 +130,6 @@ class Mage_Backend_Block_System_Config_EditTest extends PHPUnit_Framework_TestCa
         );
         $block->expects($this->once())->method('initForm');
         $block->expects($this->once())->method('getNameInLayout')->will($this->returnValue('test_block_name'));
-        $block->expects($this->once())->method('getIsAnonymous')->will($this->returnValue(false));
 
         $this->_layoutMock->expects($this->once())
             ->method('createBlock')

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -327,36 +327,13 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
     }
 
     /**
-     * Set assigned category IDs array to product
-     *
-     * @param array|string $ids
-     * @return Mage_Catalog_Model_Product
-     */
-    public function setCategoryIds($ids)
-    {
-        if (is_string($ids)) {
-            $ids = explode(',', $ids);
-        } elseif (!is_array($ids)) {
-            Mage::throwException(Mage::helper('Mage_Catalog_Helper_Data')->__('Invalid category IDs.'));
-        }
-        foreach ($ids as $i => $v) {
-            if (empty($v)) {
-                unset($ids[$i]);
-            }
-        }
-
-        $this->setData('category_ids', $ids);
-        return $this;
-    }
-
-    /**
      * Retrieve assigned category Ids
      *
      * @return array
      */
     public function getCategoryIds()
     {
-        if (! $this->hasData('category_ids')) {
+        if (!$this->hasData('category_ids')) {
             $wasLocked = false;
             if ($this->isLockedAttribute('category_ids')) {
                 $wasLocked = true;
@@ -369,7 +346,7 @@ class Mage_Catalog_Model_Product extends Mage_Catalog_Model_Abstract
             }
         }
 
-        return (array) $this->_getData('category_ids');
+        return (array)$this->_getData('category_ids');
     }
 
     /**

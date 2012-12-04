@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -133,8 +133,10 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
             $product->addData($data)
                 ->setWebsiteIds($configProduct->getWebsiteIds());
         }
-        if ($product->dataHasChangedFor('attribute_set_id')) {
+
+        if ($setId != $this->_getSession()->getAttributeSetId()) {
             $this->_initProductSave($product);
+            $this->_getSession()->setAttributeSetId($setId);
         }
 
         Mage::register('product', $product);
@@ -223,7 +225,7 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
             $this->_setActiveMenu('Mage_Catalog::catalog_products');
         }
 
-        $this->getLayout()->getBlock('head')->setCanLoadExtJs(true);
+        $this->getLayout()->getBlock('head')->setCanLoadExtJs(false);
 
         $block = $this->getLayout()->getBlock('catalog.wysiwyg.js');
         if ($block) {
@@ -274,7 +276,7 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
                 );
         }
 
-        $this->getLayout()->getBlock('head')->setCanLoadExtJs(true);
+        $this->getLayout()->getBlock('head')->setCanLoadExtJs(false);
 
         $block = $this->getLayout()->getBlock('catalog.wysiwyg.js');
         if ($block) {
@@ -620,28 +622,23 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
          */
         $links = $this->getRequest()->getPost('links');
         if (isset($links['related']) && !$product->getRelatedReadonly()) {
-            $product->setRelatedLinkData(Mage::helper('Mage_Adminhtml_Helper_Js')->decodeGridSerializedInput($links['related']));
+            $product->setRelatedLinkData(
+                Mage::helper('Mage_Adminhtml_Helper_Js')->decodeGridSerializedInput($links['related'])
+            );
         }
         if (isset($links['upsell']) && !$product->getUpsellReadonly()) {
-            $product->setUpSellLinkData(Mage::helper('Mage_Adminhtml_Helper_Js')->decodeGridSerializedInput($links['upsell']));
+            $product->setUpSellLinkData(
+                Mage::helper('Mage_Adminhtml_Helper_Js')->decodeGridSerializedInput($links['upsell'])
+            );
         }
         if (isset($links['crosssell']) && !$product->getCrosssellReadonly()) {
             $product->setCrossSellLinkData(Mage::helper('Mage_Adminhtml_Helper_Js')
                 ->decodeGridSerializedInput($links['crosssell']));
         }
         if (isset($links['grouped']) && !$product->getGroupedReadonly()) {
-            $product->setGroupedLinkData(Mage::helper('Mage_Adminhtml_Helper_Js')->decodeGridSerializedInput($links['grouped']));
-        }
-
-        /**
-         * Initialize product categories
-         */
-        $categoryIds = $this->getRequest()->getPost('category_ids');
-        if (null !== $categoryIds) {
-            if (empty($categoryIds)) {
-                $categoryIds = array();
-            }
-            $product->setCategoryIds($categoryIds);
+            $product->setGroupedLinkData(
+                Mage::helper('Mage_Adminhtml_Helper_Js')->decodeGridSerializedInput($links['grouped'])
+            );
         }
 
         /**
@@ -703,25 +700,15 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
         }
     }
 
-    public function categoriesJsonAction()
-    {
-        $product = $this->_initProduct();
-
-        $this->getResponse()->setBody(
-            $this->getLayout()->createBlock('Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Categories')
-                ->getCategoryChildrenJson($this->getRequest()->getParam('category'))
-        );
-    }
-
     /**
      * Save product action
      */
     public function saveAction()
     {
-        $storeId        = $this->getRequest()->getParam('store');
-        $redirectBack   = $this->getRequest()->getParam('back', false);
-        $productId      = $this->getRequest()->getParam('id');
-        $isEdit         = (int)($this->getRequest()->getParam('id') != null);
+        $storeId = $this->getRequest()->getParam('store');
+        $redirectBack = $this->getRequest()->getParam('back', false);
+        $productId = $this->getRequest()->getParam('id');
+        $isEdit = (int)($this->getRequest()->getParam('id') != null);
 
         $data = $this->getRequest()->getPost();
         if ($data) {
@@ -730,6 +717,10 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
             $product = $this->_initProductSave($this->_initProduct());
 
             try {
+                if (isset($data['product'][$product->getIdFieldName()])) {
+                    throw new Mage_Core_Exception($this->__('Unable to save product'));
+                }
+
                 $originalSku = $product->getSku();
                 $product->save();
                 $productId = $product->getId();
@@ -739,7 +730,7 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
                  */
                 if (isset($data['copy_to_stores'])) {
                     foreach ($data['copy_to_stores'] as $storeTo=>$storeFrom) {
-                        $newProduct = Mage::getModel('Mage_Catalog_Model_Product')
+                        Mage::getModel('Mage_Catalog_Model_Product')
                             ->setStoreId($storeFrom)
                             ->load($productId)
                             ->setStoreId($storeTo)
@@ -752,7 +743,9 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
                 $this->_getSession()->addSuccess($this->__('The product has been saved.'));
                 if ($product->getSku() != $originalSku) {
                     $this->_getSession()->addNotice(
-                        $this->__('SKU for product %s has been changed to %s.', Mage::helper('Mage_Core_Helper_Data')->escapeHtml($product->getName()), Mage::helper('Mage_Core_Helper_Data')->escapeHtml($product->getSku()))
+                        $this->__('SKU for product %s has been changed to %s.', Mage::helper('Mage_Core_Helper_Data')
+                            ->escapeHtml($product->getName()),
+                            Mage::helper('Mage_Core_Helper_Data')->escapeHtml($product->getSku()))
                     );
                 }
             } catch (Mage_Core_Exception $e) {
@@ -768,14 +761,14 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
 
         if ($redirectBack) {
             $this->_redirect('*/*/edit', array(
-                'id'    => $productId,
-                '_current'=>true
+                'id'       => $productId,
+                '_current' =>true
             ));
-        } elseif($this->getRequest()->getParam('popup')) {
+        } elseif ($this->getRequest()->getParam('popup')) {
             $this->_redirect('*/*/created', array(
-                '_current'   => true,
-                'id'         => $productId,
-                'edit'       => $isEdit
+                '_current' => true,
+                'id'       => $productId,
+                'edit'     => $isEdit
             ));
         } else {
             $this->_redirect('*/*/', array('store'=>$storeId));
@@ -940,7 +933,7 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
         $result = array();
 
         /* @var $configurableProduct Mage_Catalog_Model_Product */
-        $configurableProduct = Mage::getModel('Mage_Catalog_Model_Product')
+        $configurableProduct = $this->_objectManager->create('Mage_Catalog_Model_Product')
             ->setStoreId(Mage_Core_Model_App::ADMIN_STORE_ID)
             ->load($this->getRequest()->getParam('product'));
 
@@ -952,7 +945,7 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
 
         /* @var $product Mage_Catalog_Model_Product */
 
-        $product = Mage::getModel('Mage_Catalog_Model_Product')
+        $product = $this->_objectManager->create('Mage_Catalog_Model_Product')
             ->setStoreId(0)
             ->setTypeId(Mage_Catalog_Model_Product_Type::TYPE_SIMPLE)
             ->setAttributeSetId($configurableProduct->getAttributeSetId());
@@ -972,8 +965,8 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
                 $configurableProduct->getData($attribute->getAttributeCode())
             );
         }
-
-        $product->addData($this->getRequest()->getParam('simple_product', array()));
+        $requestData = $this->getRequest()->getParam('simple_product', array());
+        $product->addData($requestData);
         $product->setWebsiteIds($configurableProduct->getWebsiteIds());
 
         $autogenerateOptions = array();
@@ -1000,22 +993,22 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
         }
 
         if (is_array($product->getPricing())) {
-           $result['pricing'] = $product->getPricing();
-           $additionalPrice = 0;
-           foreach ($product->getPricing() as $pricing) {
-               if (empty($pricing['value'])) {
-                   continue;
-               }
+            $result['pricing'] = $product->getPricing();
+            $additionalPrice = 0;
+            foreach ($product->getPricing() as $pricing) {
+                if (empty($pricing['value'])) {
+                    continue;
+                }
 
-               if (!empty($pricing['is_percent'])) {
-                   $pricing['value'] = ($pricing['value']/100)*$product->getPrice();
-               }
+                if (!empty($pricing['is_percent'])) {
+                    $pricing['value'] = ($pricing['value']/100)*$product->getPrice();
+                }
 
-               $additionalPrice += $pricing['value'];
-           }
+                $additionalPrice += $pricing['value'];
+            }
 
-           $product->setPrice($product->getPrice() + $additionalPrice);
-           $product->unsPricing();
+            $product->setPrice($product->getPrice() + $additionalPrice);
+            $product->unsPricing();
         }
 
         try {
@@ -1026,15 +1019,21 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
 //                $strErrors = array();
 //                foreach($errors as $code=>$error) {
 //                    $codeLabel = $product->getResource()->getAttribute($code)->getFrontend()->getLabel();
-//                    $strErrors[] = ($error === true)? Mage::helper('Mage_Catalog_Helper_Data')->__('Value for "%s" is invalid.', $codeLabel) : Mage::helper('Mage_Catalog_Helper_Data')->__('Value for "%s" is invalid: %s', $codeLabel, $error);
+//                    $strErrors[] = ($error === true) ?
+//                    Mage::helper('Mage_Catalog_Helper_Data')->__('Value for "%s" is invalid.', $codeLabel) :
+//                    Mage::helper('Mage_Catalog_Helper_Data')->__('Value for "%s" is invalid: %s', $codeLabel, $error);
 //                }
 //                Mage::throwException('data_invalid', implode("\n", $strErrors));
 //            }
+            if (isset($requestData[$product->getIdFieldName()])) {
+                throw new Mage_Core_Exception($this->__('Unable to create product'));
+            }
 
             $product->validate();
             $product->save();
             $result['product_id'] = $product->getId();
-            $this->_getSession()->addSuccess(Mage::helper('Mage_Catalog_Helper_Data')->__('The product has been created.'));
+            $this->_getSession()->addSuccess(
+                Mage::helper('Mage_Catalog_Helper_Data')->__('The product has been created.'));
             $this->_initLayoutMessages('Mage_Adminhtml_Model_Session');
             $result['messages']  = $this->getLayout()->getMessagesBlock()->getGroupedHtml();
         } catch (Mage_Core_Exception $e) {
@@ -1052,7 +1051,8 @@ class Mage_Adminhtml_Catalog_ProductController extends Mage_Adminhtml_Controller
              );
         }
 
-        $this->getResponse()->setBody(Mage::helper('Mage_Core_Helper_Data')->jsonEncode($result));
+        $helper = $this->_objectManager->get('Mage_Core_Helper_Data');
+        $this->getResponse()->setBody($helper->jsonEncode($result));
     }
 
     /**

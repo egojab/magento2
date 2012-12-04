@@ -21,19 +21,18 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 -->
 <config>
     <modules>
         <Mage_Catalog>
-            <version>1.6.0.0.17</version>
+            <version>1.6.0.0.19</version>
             <active>true</active>
             <codePool>core</codePool>
             <depends>
                 <Mage_Eav/>
-                <Mage_Dataflow/>
                 <Mage_Cms/>
                 <Mage_Index/>
                 <Mage_Customer/>
@@ -211,6 +210,7 @@
                 </flat>
                 <attributes>
                     <unassignable>
+                        <image/>
                         <name/>
                         <description/>
                         <short_description/>
@@ -219,6 +219,8 @@
                         <status/>
                         <visibility/>
                         <weight/>
+                        <category_ids/>
+                        <quantity_and_stock_status/>
                     </unassignable>
                     <used_in_autogeneration>
                         <name/>

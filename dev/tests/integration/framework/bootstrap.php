@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Magento
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -91,6 +91,7 @@ if (defined('TESTS_BAMBOO_PROFILER_FILE') && defined('TESTS_BAMBOO_PROFILER_METR
  * To allow config fixtures to deal with fixture stores, data fixtures should be processed before config fixtures.
  */
 $eventManager = new Magento_Test_EventManager(array(
+    new Magento_Test_ClearProperties(),
     new Magento_Test_Annotation_AppIsolation(),
     new Magento_Test_Event_Transaction(new Magento_Test_EventManager(array(
         new Magento_Test_Annotation_DbIsolation(),

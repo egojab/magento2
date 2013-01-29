@@ -1,3 +1,107 @@
+2.0.0.0-dev39
+=============
+* Visual design editor improvements:
+  * VDE changes can be saved to DB for current store and theme. Layout updates composed by VDE are combined into one record
+  * Introduced temporary layout changes which should store non-applied modifications made during VDE functioning. Added new column `updated_at` to `core_layout_update` table for this, added observers and cron jobs to clean outdated layout updates
+  * Added `vde/` prefix to all links inside VDE frame
+  * Disabled caching (layout, blocks HTML, etc) in Design mode
+  * Reviewed and improved "Quit" action to properly cleanup session, cache and cookies
+  * Visual enhancements added when block is being dragged (block display, highlighting, cursor shape)
+  * Added ability to set placeholder for a draggable block in VDE canvas
+  * Fixed sorting of items within container
+  * Improved logic of VDE canvas iframe sizing according to window size to have one scroll bar and static toolbar at the bottom of the page
+* Improved themes management:
+  * New separate tab on theme edit page which allows to view and download CSS files used on frontend. Files are divided to framework files, library files and theme files
+  * Added an ability to upload and store custom CSS file which can be applied on frontend
+  * Improved renaming of virtual themes, restricted modifying of physical themes
+* Implemented changes in product creation process in admin interface:
+  * Added "Variations" block with configurable product attributes in "General" tab. With this block all final prices of configurable product variations can be easily added and configured in one place. Easy sorting mechanism helps understand the order of applying price modifications. "Variations" block can be reloaded itself without reloading all product creation page. All product variations are being created automatically with saving the parent configurable product
+  * Improved image management control. Multiple image control is placed in General tab. It provides easier upload and basic management of product's images than image gallery does.
+  * Changed Save button on product edit page. Save button is implemented as a split-button with the following options: "Save & New", "Save & Duplicate", "Save & Close"
+* Changed representation of a configurable product's image on frontend to use product's variation image instead of parent product's one
+* Implemented js-plugin `mage` to give an ability to extend Magento js-code and modify initializing parameters during the runtime. Replaced instantiation of `form` and `validation` instances with `mage` widget
+* Implemented autocomplete js-component on backend based on jQuery-ui
+* Refactored frontend design theme to use jQuery library instead of Prototype for the following frontend components:
+  * Varien Product class – class handles product price calculations on the client side as product price options are changed: `Product.Config`, `Product.Zoom`, `Product.Super`, `Product.OptionsPrice`
+  * `RegionUpdater` & `ZipUpdater` classes – classes handle dynamically changing State/Province field from drop down to text field depending on selected country. They also handle "required" setting for State/Province and Zip/Postal Code fields.
+  * `Varien.searchForm` – class handles quick search autocomplete functionality
+* `VarienForm` class is deprecated
+* Improved floating toolbar in backend
+* Refactored the following grids in backend to make them configurable through layout, rather than hard-coded: `Mage_Adminhtml_Block_Newsletter_Queue_Grid`, `Mage_Adminhtml_Block_Report_Refresh_Statistics`
+* Dependency injection improvements:
+  * Added ability to generate proxy and factory classes on-the-fly for use with DI implementations. Generators can be managed in DI configuration
+  * Implemented tools (shell scripts) that allow generating skeletons of factory and proxy classes for use with DI implementations
+  * Added ability to set preferences to object manager and specify them through configuration
+* Refactored the following modules to utilize `Magento_Filesystem` library instead of using built-in PHP core functions directly: `Mage_Adminhtml`, `Mage_Backend`, `Mage_Backup`, `Mage_Captcha`, `Mage_Catalog`, `Mage_Cms`, `Mage_Connect`, `Mage_Core`, `Mage_Install`
+* Bug fixes:
+  * Fixed bug with incorrect order processing in `Mage_Authorizenet_Model_Directpost`
+  * Fixed bug with unnecessary "loading" image on Category field during product editing in backend
+  * Fixed bug in `Mage_Adminhtml_CustomerController` with error message during subscription to newsletter
+  * Fixed bug in custom option template with incorrect import of custom option during product creation
+  * Fixed JavaScript bug with image uploader control on product edit page on backend in IE9
+  * Fixed bug with incorrect CSS directives in `app/code/core/Mage/Adminhtml/view/adminhtml/catalog.xml`
+  * Replaced usages of Validation Prototype class with jQuery analog in modules `Manage Attributes Sets`, `Reports` and `Order`
+  * Fixed bug with Javascript errors in "accordion" tabs and incorrect tab content during product creation.
+  * Fixed XSS vulnerability in configurable product on backend product page
+  * Fixed inability to update values in PayPal system configuration
+  * Fixed "The command line is too long" error triggered by static code analysis CLI tools when the lists become too large
+  * Fixed inability to create shipping label for DHL caused by wrong logo image path
+  * Fixed inactive navigation menu item of "Import/Export Tax Rates" page
+
+2.0.0.0-dev38
+=============
+* Changed application initialization procedure
+  * Application can be started with specific initial configuration data. `Mage_Core_Model_Config::loadBase()` merges this configuration with the highest priority
+  * `Mage` class is no longer responsible for application installation status. `Mage_Core_Model_App` has this responsibility (`Mage_Core_Model_App::isInstalled()`)
+* Implemented new library component `Magento_Filesystem` for working with file system
+  * New component has more abstract layer of interaction with file system, better path isolation
+  * Introduced interface Magento_Filesystem_AdapterInterface for file operations. Added concrete implementation in `Magento_Filesystem_Adapter_Local`
+  * Introduced interface Magento_Filesystem_StreamInterface for stream operations with content. Added concrete implementation in `Magento_Filesystem_Stream_Local`
+  * Added special class `Magento_Filesystem_Stream_Mode` to set parameters of stream on opening (read-only, write-only etc.)
+* Added an ability to skip some service functions for lighter launch of application in `app/bootstrap.php`
+* Improved batch tool for launching automated tests. Tool has an ability to run specified test types. Tool was moved from `dev/tools/batch_tests` to `dev/tools/tests.php`
+* Improved integration test Mage_Adminhtml_DashboardControllerTest to skip test case when Google service is unavailable
+* Improved url building process in new jQuery form widget to have it more secure
+* Removed obsolete `@group module::<Namespace_Module>` annotation from integration tests, restricted its further usage
+* Updated jQuery library used in application, used unified file name instead of version-based one
+* Relocated XSD files for System Configuration, Menu Configuration, ACL Configuration, ACL Configuration for WebApi, Theme Configuration, View Configuration, Validator Configuration to `etc` subfolders of corresponding modules
+* Bug fixes
+  * Fixed bug with placing order in backend using Authorize.Net Direct Post payment method
+  * Changed `Mage_Core_Model_Url` to fix bug with incorrect links on frontend (My Wishlist, Go to Shopping Cart, Continue button at first checkout step)
+  * Fixed several bugs after converting backend grids to layout declaration. Changes were made in EAV Attributes, Design, Newsletter, Backup modules
+  * Fixed incorrect current working directory behavior on application isolation in tests
+
+2.0.0.0-dev37
+=============
+* Refactored a variety of grids in backend (admin) to make them configurable through layout, rather than hard-coded. The following classes were affected (converted): `Mage_User_Block_User_Grid`, `Mage_User_Block_Role_Grid`, `Mage_Adminhtml_Block_System_Design_Grid`, `Mage_Adminhtml_Block_Catalog_Product_Attribute_Set_Grid`, `Mage_Adminhtml_Block_Newsletter_Problem_Grid`, `Mage_Adminhtml_Block_Backup_Grid`, `Mage_Adminhtml_Block_Tax_Rate_Grid`, `Mage_Adminhtml_Block_System_Store_Grid`, `Mage_Adminhtml_Block_System_Email_Template_Grid`, `Mage_Adminhtml_Block_Sitemap_Grid`, `Mage_Adminhtml_Block_Catalog_Search_Grid`, `Mage_Adminhtml_Block_Urlrewrite_Grid`, `Mage_Adminhtml_Block_System_Variable_Grid`, `Mage_Adminhtml_Block_Report_Review_Customer_Grid`, `Mage_Adminhtml_Block_Report_Review_Product_Grid`
+* Modified behavior of configuration merging. Each config file can be separately validated against DOM schema.
+* Moved `Mage_Adminhtml_Utility_Controller` to `Backend` and changed all child classes
+* Changes in Profiler system:
+  * Created separate component for handling Profiler Driver selection logic
+  * Extended `Magento_Profiler::start()` calls with tags as second argument
+* Bug fix - Added additional validation into `Mage_Adminhtml_Catalog_CategoryController` to prevent saving new category with any id using firebug
+
+2.0.0.0-dev36
+=============
+* Visual design editor refactored
+  * VDE controls and VDE actions moved to backend area
+  * Added IFRAME that allows to navigate through frontend pages in Navigation Mode and to modify blocks position in Design Mode
+  * Inline JavaScript code is disabled in Design Mode
+  * Store selection is performed on saving instead of reviewing the theme. List of all available stores is shown during assigning the theme to a store
+  * `System -> Design -> Editor` page divided into two tabs:
+    * "Available Themes" tab contains all available themes
+    * "My Customizations" tab contains themes customized by the store administrator and consists of area with themes assigned to stores and area with unassigned themes
+  * Added `vde` area code and `Mage_DesignEditor_Controller_Varien_Router_Standard` to handle requests from design editor
+  * Added ability to use custom layout instance in controllers to use specific layout, when design editor is launched
+* JavaScript updates
+  * Replaced `varienTabs` class with an analogous jQuery widget
+  * Displaying of loader during AJAX requests became optional
+* Removed `dev/api-tests` directory added by mistake
+* Bug fixes
+  * Impossible to login to backend with APC enabled. Added call of `session_write_close()` in the session model destructor
+  * Unnecessary regions shown when no country is selected in `System -> Sales -> Shipping Settings -> Origin`
+  * Fixed various bugs caused by virtual themes implementation and other themes improvements
+
 2.0.0.0-dev35
 =============
 * Enhancements of System Configuration:
@@ -206,11 +310,10 @@
 
 2.0.0.0-dev29
 =============
-* Added scripts that allow upgrading database from CE 1.7 (EE 1.12) to 2.x
+* Implemented and verified ability to upgrade DB from CE 1.7 (EE 1.12) to 2.x
 * Replaced calendar UI component with jQuery calendar
-* Removed store scope selector from backend customers management
-* Renamed `pub/js` (was known as `js` in Magento 1.x) into `pub/lib`
 * Restored back the public access to `pub/cron.php` entry point (in the previous patch it was denied by mistake)
+* Fixed typo in label of "Catalog Search" index in UI
 
 2.0.0.0-dev28
 =============
@@ -658,7 +761,7 @@
 =============
 * Implemented a tool for migrating factory table names from 1.x to 2.x. The tool replaces table names by list of names associations
 * Changed Unit tests suite running from usage AllTests.php in each directory to configuration in phpunit.xml.dist. Now all tests in `testsuite` directory are launched, there is no necessity to add new tests to the config
-* Implemented in Visual Desig Editor:
+* Implemented in Visual Design Editor:
   * Containers highlighting
   * Dropping of elements
 * Fixed some issues:
@@ -732,10 +835,10 @@
 2.0.0.0-dev02
 =============
 Deprecated code & minor fixes update:
-* eliminated remnants of `htmlescape` implementation
-* eliminated usage of `pub/js/index.php` entry point (used to be `js/index.php`)
-* disbanded the shell root directory: moved scripts into `dev/shell` and classes into app
-* minor refactoring of data fixtures rollback capability in integration testing framework
+* Eliminated remnants of `htmlescape` implementation
+* Eliminated usage of `pub/js/index.php` entry point (used to be `js/index.php`)
+* Disbanded the shell root directory: moved scripts into `dev/shell` and classes into app
+* Minor refactoring of data fixtures rollback capability in integration testing framework
 
 2.0.0.0-dev01
 =============

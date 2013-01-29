@@ -19,7 +19,7 @@
  *
  * @category    checkout coupon discount codes
  * @package     mage
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /*jshint browser:true jquery:true*/
@@ -27,17 +27,17 @@
     $.widget('mage.discountCode', {
         options: {
         },
-        _create: function() {
+        _create: function () {
             this.couponCode = $(this.options.couponCodeSelector);
             this.removeCoupon = $(this.options.removeCouponSelector);
 
-            $(this.options.applyButton).on('click', $.proxy(function() {
+            $(this.options.applyButton).on('click', $.proxy(function () {
                 this.couponCode.attr('data-validate', '{required:true}');
                 this.removeCoupon.attr('value', '0');
-                this.element.mage().validate().submit();
+                $(this.element).validation().submit();
             }, this));
 
-            $(this.options.cancelButton).on('click', $.proxy(function() {
+            $(this.options.cancelButton).on('click', $.proxy(function () {
                 this.couponCode.removeAttr('data-validate');
                 this.removeCoupon.attr('value', '1');
                 this.element.submit();

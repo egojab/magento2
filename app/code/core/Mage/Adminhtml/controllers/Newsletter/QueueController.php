@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -48,10 +48,6 @@ class Mage_Adminhtml_Newsletter_QueueController extends Mage_Adminhtml_Controlle
         $this->loadLayout();
 
         $this->_setActiveMenu('Mage_Newsletter::newsletter_queue');
-
-        $this->_addContent(
-            $this->getLayout()->createBlock('Mage_Adminhtml_Block_Newsletter_Queue', 'queue')
-        );
 
         $this->_addBreadcrumb(Mage::helper('Mage_Newsletter_Helper_Data')->__('Newsletter Queue'), Mage::helper('Mage_Newsletter_Helper_Data')->__('Newsletter Queue'));
 
@@ -92,9 +88,8 @@ class Mage_Adminhtml_Newsletter_QueueController extends Mage_Adminhtml_Controlle
      */
     public function gridAction()
     {
-        $this->getResponse()->setBody(
-            $this->getLayout()->createBlock('Mage_Adminhtml_Block_Newsletter_Queue_Grid')->toHtml()
-        );
+        $this->loadLayout(false);
+        $this->renderLayout();
     }
 
     public function startAction()

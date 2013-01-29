@@ -19,7 +19,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -82,6 +82,10 @@ WysiwygWidget.Widget.prototype = {
 
     initialize: function(formEl, widgetEl, widgetOptionsEl, optionsSourceUrl, widgetTargetId) {
         $(formEl).insert({bottom: widgetTools.getDivHtml(widgetOptionsEl)});
+        jQuery('#' + formEl).mage('validation', {
+            ignore: ".skip-submit",
+            errorClass: 'mage-error'
+        });
         this.formEl = formEl;
         this.widgetEl = $(widgetEl);
         this.widgetOptionsEl = $(widgetOptionsEl);
@@ -210,11 +214,12 @@ WysiwygWidget.Widget.prototype = {
     },
 
     insertWidget: function() {
-        var validationResult = jQuery('#' + this.formEl).validate({
+        jQuery('#' + this.formEl).validate({
             ignore: ".skip-submit",
             errorClass: 'mage-error'
-        }).valid();
+        });
 
+        var validationResult = jQuery('#' + this.formEl).valid();
         if (validationResult) {
             var formElements = [];
             var i = 0;

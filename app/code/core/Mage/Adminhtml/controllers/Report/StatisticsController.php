@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -42,11 +42,6 @@ class Mage_Adminhtml_Report_StatisticsController extends Mage_Adminhtml_Controll
 
     public function _initAction()
     {
-        $act = $this->getRequest()->getActionName();
-        if(!$act) {
-            $act = 'default';
-        }
-
         $this->loadLayout()
             ->_addBreadcrumb(Mage::helper('Mage_Reports_Helper_Data')->__('Reports'), Mage::helper('Mage_Reports_Helper_Data')->__('Reports'))
             ->_addBreadcrumb(Mage::helper('Mage_Reports_Helper_Data')->__('Statistics'), Mage::helper('Mage_Reports_Helper_Data')->__('Statistics'));

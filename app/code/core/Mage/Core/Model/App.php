@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -35,7 +35,6 @@
  */
 class Mage_Core_Model_App
 {
-
     const XML_PATH_INSTALL_DATE = 'global/install/date';
 
     const XML_PATH_SKIP_PROCESS_MODULES_UPDATES = 'global/skip_process_modules_updates';
@@ -67,13 +66,18 @@ class Mage_Core_Model_App
      * Default store code (for install)
      *
      */
-    const DISTRO_STORE_CODE     = 'default';
+    const DISTRO_STORE_CODE     = Mage_Core_Model_Store::DEFAULT_CODE;
 
     /**
      * Admin store Id
      *
      */
     const ADMIN_STORE_ID = 0;
+
+    /**
+     * Dependency injection configuration node name
+     */
+    const CONFIGURATION_DI_NODE = 'di';
 
     /**
      * Application loaded areas array
@@ -116,13 +120,6 @@ class Mage_Core_Model_App
      * @var Mage_Core_Model_Design_Package
      */
     protected $_design;
-
-    /**
-     * Application layout object
-     *
-     * @var Mage_Core_Model_Layout
-     */
-    protected $_layout;
 
     /**
      * Application configuration object
@@ -260,8 +257,11 @@ class Mage_Core_Model_App
     /**
      * Constructor
      */
-    public function __construct(Magento_ObjectManager $objectManager)
-    {
+    public function __construct(
+        Mage_Core_Controller_Varien_Front $frontController,
+        Magento_ObjectManager $objectManager
+    ) {
+        $this->_frontController = $frontController;
         $this->_objectManager = $objectManager;
     }
 
@@ -288,7 +288,7 @@ class Mage_Core_Model_App
         $this->_initCache();
         $this->_config->init($options);
         $this->loadAreaPart(Mage_Core_Model_App_Area::AREA_GLOBAL, Mage_Core_Model_App_Area::PART_EVENTS);
-        $this->_objectManager->loadAreaConfiguration();
+        $this->loadDiConfiguration();
         Magento_Profiler::stop('init_config');
 
         if (Mage::isInstalled($options)) {
@@ -371,7 +371,7 @@ class Mage_Core_Model_App
             $logger = $this->_initLogger();
             $this->_initModules();
             $this->loadAreaPart(Mage_Core_Model_App_Area::AREA_GLOBAL, Mage_Core_Model_App_Area::PART_EVENTS);
-            $this->_objectManager->loadAreaConfiguration();
+            $this->loadDiConfiguration();
 
             if ($this->_config->isLocalConfigLoaded()) {
                 $scopeCode = isset($params['scope_code']) ? $params['scope_code'] : '';
@@ -387,6 +387,28 @@ class Mage_Core_Model_App
             $controllerFront->dispatch();
         }
         return $this;
+    }
+
+    /**
+     * Whether the application has been installed or not
+     *
+     * @return bool
+     */
+    public function isInstalled()
+    {
+        return (bool)$this->_config->getInstallDate();
+    }
+
+    /**
+     * Throw an exception, if the application has not been installed yet
+     *
+     * @throws Magento_Exception
+     */
+    public function requireInstalledInstance()
+    {
+        if (!$this->isInstalled()) {
+            throw new Magento_Exception('Application is not installed yet, please complete the installation first.');
+        }
     }
 
     /**
@@ -431,7 +453,8 @@ class Mage_Core_Model_App
             $options = array();
         }
         $options = array_merge($options, $cacheInitOptions);
-        $this->_cache = Mage::getModel('Mage_Core_Model_Cache', array('options' => $options));
+        $this->_cache = $this->_objectManager->create('Mage_Core_Model_Cache', array('options' => $options), false);
+        $this->_objectManager->addSharedInstance($this->_cache, 'Mage_Core_Model_Cache');
         $this->_isCacheLocked = false;
         return $this;
     }
@@ -520,13 +543,13 @@ class Mage_Core_Model_App
             $scopeType = 'website';
         }
         switch ($scopeType) {
-            case 'store':
+            case Mage_Core_Model_App_Options::APP_RUN_TYPE_STORE:
                 $this->_currentStore = $scopeCode;
                 break;
-            case 'group':
+            case Mage_Core_Model_App_Options::APP_RUN_TYPE_GROUP:
                 $this->_currentStore = $this->_getStoreByGroup($scopeCode);
                 break;
-            case 'website':
+            case Mage_Core_Model_App_Options::APP_RUN_TYPE_WEBSITE:
                 $this->_currentStore = $this->_getStoreByWebsite($scopeCode);
                 break;
             default:
@@ -1123,14 +1146,7 @@ class Mage_Core_Model_App
      */
     public function getLayout()
     {
-        if (!$this->_layout) {
-            if ($this->getFrontController()->getAction()) {
-                $this->_layout = $this->getFrontController()->getAction()->getLayout();
-            } else {
-                $this->_layout = Mage::getSingleton('Mage_Core_Model_Layout');
-            }
-        }
-        return $this->_layout;
+        return $this->_objectManager->get('Mage_Core_Model_Layout');
     }
 
     /**
@@ -1300,8 +1316,9 @@ class Mage_Core_Model_App
     public function cleanAllSessions()
     {
         if (session_module_name() == 'files') {
-            $dir = session_save_path();
-            mageDelTree($dir);
+            /** @var Magento_Filesystem $filesystem */
+            $filesystem = $this->_objectManager->create('Magento_Filesystem');
+            $filesystem->delete(session_save_path());
         }
         return $this;
     }
@@ -1396,7 +1413,7 @@ class Mage_Core_Model_App
 
             foreach ($events[$eventName]['observers'] as $obsName => $obs) {
                 $observer->setData(array('event' => $event));
-                Magento_Profiler::start('OBSERVER:' . $obsName);
+                Magento_Profiler::start('OBSERVER:' . $obsName, array('group' => 'OBSERVER', 'observer' => $obsName));
                 switch ($obs['type']) {
                     case 'disabled':
                         break;
@@ -1594,5 +1611,19 @@ class Mage_Core_Model_App
     public function isDeveloperMode()
     {
         return Mage::getIsDeveloperMode();
+    }
+
+    /**
+     * Load di configuration for given area
+     *
+     * @param string $areaCode
+     */
+    public function loadDiConfiguration($areaCode = Mage_Core_Model_App_Area::AREA_GLOBAL)
+    {
+        $configurationNode = $this->_config->getNode($areaCode . '/' . self::CONFIGURATION_DI_NODE);
+        if ($configurationNode) {
+            $configuration = $configurationNode->asArray();
+            $this->_objectManager->setConfiguration($configuration);
+        }
     }
 }

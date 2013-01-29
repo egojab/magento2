@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Wishlist
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -33,17 +33,4 @@
  */
 class Mage_Wishlist_Block_Customer_Wishlist_Item_Column_Remove extends Mage_Wishlist_Block_Customer_Wishlist_Item_Column
 {
-    /**
-     * Retrieve block javascript
-     *
-     * @return string
-     */
-    public function getJs()
-    {
-        return parent::getJs() . "
-        function confirmRemoveWishlistItem() {
-            return confirm('" . $this->__('Are you sure you want to remove this product from your wishlist?') . "');
-        }
-        ";
-    }
 }

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Backend
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -52,6 +52,7 @@ class Mage_Backend_Block_Widget_Grid_Column_Multistore extends Mage_Backend_Bloc
      * @param Mage_Core_Model_Store_Config $storeConfig
      * @param Mage_Core_Controller_Varien_Front $frontController
      * @param Mage_Core_Model_Factory_Helper $helperFactory
+     * @param Magento_Filesystem $filesystem
      * @param Mage_Core_Model_App $application
      * @param array $data
      *
@@ -69,11 +70,12 @@ class Mage_Backend_Block_Widget_Grid_Column_Multistore extends Mage_Backend_Bloc
         Mage_Core_Model_Store_Config $storeConfig,
         Mage_Core_Controller_Varien_Front $frontController,
         Mage_Core_Model_Factory_Helper $helperFactory,
+        Magento_Filesystem $filesystem,
         Mage_Core_Model_App $application,
         array $data = array()
     ) {
         parent::__construct($request, $layout, $eventManager, $urlBuilder, $translator, $cache, $designPackage,
-            $session, $storeConfig, $frontController, $helperFactory, $data
+            $session, $storeConfig, $frontController, $helperFactory, $filesystem, $data
         );
         $this->_app = $application;
     }

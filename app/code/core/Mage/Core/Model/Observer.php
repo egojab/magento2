@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -121,6 +121,24 @@ class Mage_Core_Model_Observer
         } catch (Mage_Core_Exception $e) {
             Mage::logException($e);
         }
+        return $this;
+    }
+
+    /**
+     * Add theme customization
+     *
+     * @param Varien_Event_Observer $observer
+     * @return Mage_Core_Model_Observer
+     */
+    public function addThemeCustomization(Varien_Event_Observer $observer)
+    {
+        /** @var $layout Mage_Core_Model_Layout */
+        $layout = $observer->getEvent()->getLayout();
+
+        /** @var $themeService Mage_Core_Model_Theme_Service */
+        $themeService = Mage::getObjectManager()->get('Mage_Core_Model_Theme_Service');
+        $themeService->addThemeCustomization($layout);
+
         return $this;
     }
 }

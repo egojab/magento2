@@ -19,7 +19,7 @@
  *
  * @category    mage file change/delete
  * @package     mage
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /*jshint browser:true jquery:true*/
@@ -42,6 +42,11 @@
             }, this));
         },
 
+        /**
+         * Toggles whether the current file is being changed or not. If the file is being deleted
+         * then the option to change the file is disabled.
+         * @private
+         */
         _toggleFileChange: function() {
             this.element.toggle();
             this.fileChangeFlag = !this.fileChangeFlag;
@@ -51,6 +56,12 @@
             }
         },
 
+        /**
+         * Toggles whether the file is to be deleted. When the file is being deleted, the name of
+         * the file is decorated with strike-through text and the option to change the file is
+         * disabled.
+         * @private
+         */
         _toggleFileDelete: function() {
             this.fileDeleteFlag = $(this.options.deleteFileSelector + ':checked').val();
             $(this.inputFieldAction).attr('value',

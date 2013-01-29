@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Core
  * @subpackage  unit_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -40,14 +40,48 @@ class Mage_Core_Model_ThemeTest extends PHPUnit_Framework_TestCase
     protected function _getThemeModel($designDir, $targetPath)
     {
         Mage::getConfig()->getOptions()->setData('design_dir', $designDir);
+        $objectManager = Mage::getObjectManager();
 
+        /** @var $themeCollection Mage_Core_Model_Resource_Theme_Collection */
+        $themeCollection = $this->getMock('Mage_Core_Model_Resource_Theme_Collection', array(), array(), '', false);
         $objectManagerHelper = new Magento_Test_Helper_ObjectManager($this);
+        $arguments = $objectManagerHelper->getConstructArguments(
+            Magento_Test_Helper_ObjectManager::MODEL_ENTITY, 'Mage_Core_Model_Theme',
+            array(
+                'objectManager'      => $objectManager,
+                'helper'             => $objectManager->get('Mage_Core_Helper_Data'),
+                'resource'           => $objectManager->get('Mage_Core_Model_Resource_Theme'),
+                'resourceCollection' => $themeCollection,
+                'themeFactory'       => $objectManager->get('Mage_Core_Model_Theme_Factory'),
+            )
+        );
         /** @var $themeMock Mage_Core_Model_Theme */
-        $arguments = $objectManagerHelper->getConstructArguments(Magento_Test_Helper_ObjectManager::MODEL_ENTITY);
         $themeMock = $this->getMock('Mage_Core_Model_Theme', array('_init'), $arguments, '', true);
+        $filesystemMock = $this->getMockBuilder('Magento_Filesystem')->disableOriginalConstructor(true)->getMock();
+        $filesystemMock->expects($this->any())->method('searchKeys')
+            ->will($this->returnValueMap(array(
+                array(
+                    $designDir, 'frontend/default/iphone/theme.xml',
+                    array(
+                        str_replace('/', DIRECTORY_SEPARATOR, $designDir . '/frontend/default/iphone/theme.xml')
+                    )
+                ),
+                array(
+                    $designDir, 'frontend/default/iphone/theme_invalid.xml',
+                    array(
+                        str_replace(
+                            '/',
+                            DIRECTORY_SEPARATOR,
+                            $designDir . '/frontend/default/iphone/theme_invalid.xml'
+                        )
+                    )
+                ),
+            )
+        ));
 
         /** @var $collectionMock Mage_Core_Model_Theme_Collection|PHPUnit_Framework_MockObject_MockObject */
-        $collectionMock = $this->getMock('Mage_Core_Model_Theme_Collection', array('getNewEmptyItem'));
+        $collectionMock = $this->getMock('Mage_Core_Model_Theme_Collection', array('getNewEmptyItem'),
+            array($filesystemMock));
         $collectionMock->expects($this->any())
             ->method('getNewEmptyItem')
             ->will($this->returnValue($themeMock));

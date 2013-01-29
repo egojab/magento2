@@ -19,7 +19,7 @@
  *
  * @category    mage
  * @package     mage
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /*jshint browser:true jquery:true*/
@@ -46,11 +46,21 @@
         },
 
         /**
+         * Loader initialisation
+         * @private
+         */
+        _init: function() {
+            if (this.options.showOnInit) {
+                this.show();
+            }
+        },
+
+        /**
          * Bind on ajax complete event
          * @protected
          */
         _bind: function() {
-            this.element.on('ajaxComplete ajaxError', function(e) {
+            this.element.on('ajaxComplete ajaxError processStop', function(e) {
                 e.stopImmediatePropagation();
                 $($(e.target).is(document) ? 'body' : e.target).loader('hide');
             });
@@ -106,6 +116,7 @@
          */
         destroy: function() {
             this.loader.remove();
+            this.element.off('ajaxComplete ajaxError processStop');
             return $.Widget.prototype.destroy.call(this);
         }
     });

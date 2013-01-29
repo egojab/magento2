@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -46,32 +46,44 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
      *
      * @var string
      */
-    protected $_area;
+    protected $_areaCode;
 
     /**
      * Base controller that belongs to area
      *
      * @var string
      */
-    protected $_baseController = null;
+    protected $_baseController;
 
     /**
      * @var Magento_ObjectManager
      */
-    protected $_objectManager;
+    protected $_app;
 
     /**
-     * @param Magento_ObjectManager $objectManager
-     * @param array $options
+     * @param Mage_Core_Controller_Varien_Action_Factory $controllerFactory
+     * @param Magento_Filesystem $filesystem
+     * @param Mage_Core_Model_App $app
+     * @param string $areaCode
+     * @param string $baseController
+     * @throws InvalidArgumentException
      */
-    public function __construct(Magento_ObjectManager $objectManager, array $options = array())
-    {
-        $this->_objectManager = $objectManager;
-        $this->_area           = isset($options['area']) ? $options['area'] : null;
-        $this->_baseController = isset($options['base_controller']) ? $options['base_controller'] : null;
+    public function __construct(
+        Mage_Core_Controller_Varien_Action_Factory $controllerFactory,
+        Magento_Filesystem $filesystem,
+        Mage_Core_Model_App $app,
+        $areaCode,
+        $baseController
+    ) {
+        parent::__construct($controllerFactory);
 
-        if (is_null($this->_area) || is_null($this->_baseController)) {
-            Mage::throwException("Not enough options to initialize router.");
+        $this->_app            = $app;
+        $this->_filesystem     = $filesystem;
+        $this->_areaCode       = $areaCode;
+        $this->_baseController = $baseController;
+
+        if (is_null($this->_areaCode) || is_null($this->_baseController)) {
+            throw new InvalidArgumentException("Not enough options to initialize router.");
         }
     }
 
@@ -117,9 +129,9 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     public function fetchDefault()
     {
         $this->getFront()->setDefault(array(
-            'module' => 'core',
+            'module'     => 'core',
             'controller' => 'index',
-            'action' => 'index'
+            'action'     => 'index'
         ));
     }
 
@@ -149,10 +161,10 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     /**
      * Match provided request and if matched - return corresponding controller
      *
-     * @param Zend_Controller_Request_Http $request
+     * @param Mage_Core_Controller_Request_Http $request
      * @return Mage_Core_Controller_Front_Action|null
      */
-    public function match(Zend_Controller_Request_Http $request)
+    public function match(Mage_Core_Controller_Request_Http $request)
     {
         //checking before even try to find out that current module
         //should use this router
@@ -166,7 +178,7 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
             return null;
         }
 
-        $this->_objectManager->loadAreaConfiguration($this->_area);
+        $this->_app->loadDiConfiguration($this->_areaCode);
 
         return $this->_matchController($request, $params);
     }
@@ -185,10 +197,10 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     /**
      * Parse request URL params
      *
-     * @param Zend_Controller_Request_Http $request
+     * @param Mage_Core_Controller_Request_Http $request
      * @return array
      */
-    protected function _parseRequest(Zend_Controller_Request_Http $request)
+    protected function _parseRequest(Mage_Core_Controller_Request_Http $request)
     {
         $output = array();
 
@@ -208,11 +220,11 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     /**
      * Match module front name
      *
-     * @param Zend_Controller_Request_Http $request
+     * @param Mage_Core_Controller_Request_Http $request
      * @param string $param
      * @return string|null
      */
-    protected function _matchModuleFrontName(Zend_Controller_Request_Http $request, $param)
+    protected function _matchModuleFrontName(Mage_Core_Controller_Request_Http $request, $param)
     {
         // get module name
         if ($request->getModuleName()) {
@@ -234,11 +246,11 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     /**
      * Match controller name
      *
-     * @param Zend_Controller_Request_Http $request
+     * @param Mage_Core_Controller_Request_Http $request
      * @param string $param
      * @return string
      */
-    protected function _matchControllerName(Zend_Controller_Request_Http $request,  $param)
+    protected function _matchControllerName(Mage_Core_Controller_Request_Http $request,  $param)
     {
         if ($request->getControllerName()) {
             $controller = $request->getControllerName();
@@ -259,11 +271,11 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     /**
      * Match controller name
      *
-     * @param Zend_Controller_Request_Http $request
+     * @param Mage_Core_Controller_Request_Http $request
      * @param string $param
      * @return string
      */
-    protected function _matchActionName(Zend_Controller_Request_Http $request, $param)
+    protected function _matchActionName(Mage_Core_Controller_Request_Http $request, $param)
     {
         if (empty($action)) {
             if ($request->getActionName()) {
@@ -279,29 +291,13 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     }
 
     /**
-     * Get new controller instance
-     *
-     * @param $controllerClassName
-     * @param Zend_Controller_Request_Http $request
-     * @return Mage_Core_Controller_Varien_Action
-     */
-    protected function _getControllerInstance($controllerClassName, Zend_Controller_Request_Http $request)
-    {
-        return Mage::getControllerInstance($controllerClassName,
-            $request,
-            $this->getFront()->getResponse(),
-            array('areaCode' => $this->_area)
-        );
-    }
-
-    /**
      * Get not found controller instance
      *
      * @param $currentModuleName
-     * @param Zend_Controller_Request_Http $request
+     * @param Mage_Core_Controller_Request_Http $request
      * @return Mage_Core_Controller_Varien_Action|null
      */
-    protected function _getNotFoundControllerInstance($currentModuleName, Zend_Controller_Request_Http $request)
+    protected function _getNotFoundControllerInstance($currentModuleName, Mage_Core_Controller_Request_Http $request)
     {
         $controllerInstance = null;
 
@@ -319,7 +315,9 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
             }
 
             // instantiate controller class
-            $controllerInstance = $this->_getControllerInstance($controllerClassName, $request);
+            $controllerInstance = $this->_controllerFactory->createController($controllerClassName,
+                array('request' => $request, 'areaCode' => $this->_areaCode)
+            );
         } else {
             return null;
         }
@@ -342,11 +340,11 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     /**
      * Create matched controller instance
      *
-     * @param Zend_Controller_Request_Http $request
+     * @param Mage_Core_Controller_Request_Http $request
      * @param array $params
      * @return Mage_Core_Controller_Front_Action|null
      */
-    protected function _matchController(Zend_Controller_Request_Http $request, array $params)
+    protected function _matchController(Mage_Core_Controller_Request_Http $request, array $params)
     {
         $this->fetchDefault();
 
@@ -399,9 +397,11 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
                 continue;
             }
 
-            Mage::getConfig()->setCurrentAreaCode($this->_area);
+            Mage::getConfig()->setCurrentAreaCode($this->_areaCode);
             // instantiate controller class
-            $controllerInstance = $this->_getControllerInstance($controllerClassName, $request);
+            $controllerInstance = $this->_controllerFactory->createController($controllerClassName,
+                array('request' => $request, 'areaCode' => $this->_areaCode)
+            );
 
             $found = true;
             break;
@@ -486,7 +486,7 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     protected function _includeControllerClass($controllerFileName, $controllerClassName)
     {
         if (!class_exists($controllerClassName, false)) {
-            if (!file_exists($controllerFileName)) {
+            if (!$this->_filesystem->isFile($controllerFileName)) {
                 return false;
             }
             include $controllerFileName;
@@ -530,7 +530,7 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
     {
         foreach ($modules as $module) {
             if ($moduleName === $module || (is_array($module)
-                    && $this->getModuleByName($moduleName, $module))) {
+                && $this->getModuleByName($moduleName, $module))) {
                 return true;
             }
         }
@@ -564,7 +564,11 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
 
     public function validateControllerFileName($fileName)
     {
-        if ($fileName && is_readable($fileName) && false===strpos($fileName, '//')) {
+        if ($fileName
+            && $this->_filesystem->isFile($fileName)
+            && $this->_filesystem->isReadable($fileName)
+            && false === strpos($fileName, '//')
+        ) {
             return true;
         }
         return false;
@@ -602,11 +606,11 @@ class Mage_Core_Controller_Varien_Router_Base extends Mage_Core_Controller_Varie
      * Check that request uses https protocol if it should.
      * Function redirects user to correct URL if needed.
      *
-     * @param Mage_Core_Controller_Request_Http $request
+     * @param Zend_Controller_Request_Http $request
      * @param string $path
      * @return void
      */
-    protected function _checkShouldBeSecure($request, $path = '')
+    protected function _checkShouldBeSecure(Zend_Controller_Request_Http $request, $path = '')
     {
         if (!Mage::isInstalled() || $request->getPost()) {
             return;

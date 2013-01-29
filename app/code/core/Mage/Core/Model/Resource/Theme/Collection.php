@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -29,6 +29,11 @@
  */
 class Mage_Core_Model_Resource_Theme_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
+    /**
+     * Default page size
+     */
+    const DEFAULT_PAGE_SIZE = 4;
+
     /**
      * Collection initialization
      */
@@ -58,7 +63,7 @@ class Mage_Core_Model_Resource_Theme_Collection extends Mage_Core_Model_Resource
      * @param string $area
      * @return Mage_Core_Model_Resource_Theme_Collection
      */
-    public function addAreaFilter($area)
+    public function addAreaFilter($area = Mage_Core_Model_App_Area::AREA_FRONTEND)
     {
         $this->getSelect()->where('main_table.area=?', $area);
         return $this;
@@ -132,5 +137,16 @@ class Mage_Core_Model_Resource_Theme_Collection extends Mage_Core_Model_Resource
         $this->addFieldToFilter('theme_path', $themePath);
 
         return $this->getFirstItem();
+    }
+
+    /**
+     * Set page size
+     *
+     * @param int $size
+     * @return Mage_Core_Model_Resource_Theme_Collection
+     */
+    public function setPageSize($size = self::DEFAULT_PAGE_SIZE)
+    {
+        return parent::setPageSize($size);
     }
 }

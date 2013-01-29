@@ -21,11 +21,11 @@
  * @category    Magento
  * @package     Mage_Adminhtml
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Mage_Adminhtml_Catalog_ProductControllerTest extends Mage_Adminhtml_Utility_Controller
+class Mage_Adminhtml_Catalog_ProductControllerTest extends Mage_Backend_Utility_Controller
 {
     /**
      * @magentoDataFixture Mage/Catalog/_files/product_configurable.php
@@ -72,21 +72,5 @@ class Mage_Adminhtml_Catalog_ProductControllerTest extends Mage_Adminhtml_Utilit
         $this->assertCount(1, $errorMessages);
         $this->assertEquals('Unable to save product', $errorMessages[0]->getCode());
         $this->assertRedirect($this->stringContains('/backend/admin/catalog_product/edit'));
-    }
-
-    /**
-     * @magentoDataFixture Mage/Catalog/_files/product_configurable.php
-     */
-    public function testQuickCreateActionWithDangerRequest()
-    {
-        $this->getRequest()->setPost(array(
-            'simple_product' => array(
-                'entity_id' => 15
-            ),
-            'product' => 1
-        ));
-        $this->dispatch('backend/admin/catalog_product/quickcreate');
-        $this->assertContains('"error":{"message":"Unable to create product","fields":{"sku":null}}',
-            $this->getResponse()->getBody());
     }
 }

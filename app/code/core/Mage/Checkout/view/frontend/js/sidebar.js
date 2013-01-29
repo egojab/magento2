@@ -19,30 +19,24 @@
  *
  * @category    mage side bar
  * @package     mage
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /*jshint browser:true jquery:true*/
 /*global confirm:true*/
 (function ($) {
-    $(document).ready(function () {
-        var checkout = {
-            cartSelector: null,
-            isRecursive: undefined,
-            url: null,
-            button: null,
-            confirmMessage: null,
-            closeList: null
-        };
-
-        $.mage.event.trigger('mage.checkout.initialize', checkout);
-        $(checkout.cartSelector).decorate('list', checkout.isRecursive);
-
-        $(checkout.button).on('click', function () {
-            location.href = checkout.url;
-        });
-        $(checkout.closeList).on('click', function () {
-            return confirm(checkout.confirmMessage);
-        });
+    $.widget('mage.sidebar', {
+        options: {
+            isRecursive: true
+        },
+        _create: function() {
+            this.element.decorate('list', this.options.isRecursive);
+            $(this.options.checkoutButton).on('click', $.proxy(function() {
+                location.href = this.options.checkoutUrl;
+            }, this));
+            $(this.options.removeButton).on('click', $.proxy(function() {
+                return confirm(this.options.confirmMessage);
+            }, this));
+        }
     });
 })(jQuery);

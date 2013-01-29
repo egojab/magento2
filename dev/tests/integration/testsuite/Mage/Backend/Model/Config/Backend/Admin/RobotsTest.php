@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Backend
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -37,7 +37,6 @@ class Mage_Backend_Model_Config_Backend_Admin_RobotsTest extends PHPUnit_Framewo
      */
     protected function setUp()
     {
-        /** @var _model Mage_Backend_Model_Config_Backend_Admin_Robots */
         $this->_model = Mage::getModel('Mage_Backend_Model_Config_Backend_Admin_Robots');
         $this->_model->setPath('design/search_engine_robots/custom_instructions');
         $this->_model->afterLoad();

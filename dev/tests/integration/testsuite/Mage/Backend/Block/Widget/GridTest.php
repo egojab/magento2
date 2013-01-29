@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Backend
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -59,6 +59,7 @@ class Mage_Backend_Block_Widget_GridTest extends PHPUnit_Framework_TestCase
         'Mage_Core_Model_Store_Config',
         'Mage_Core_Controller_Varien_Front',
         'Mage_Core_Model_Factory_Helper',
+        'Magento_Filesystem',
         'Mage_Backend_Helper_Data',
         'Mage_Backend_Model_Widget_Grid_Row_UrlGeneratorFactory',
         'Mage_Backend_Model_Widget_Grid_SubTotals',

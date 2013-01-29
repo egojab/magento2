@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -98,5 +98,26 @@ class Mage_Core_Model_File_Uploader extends Varien_File_Uploader
         }
 
         return parent::checkAllowedExtension($extension);
+    }
+
+    /**
+     * Get file size
+     *
+     * @return int
+     */
+    public function getFileSize()
+    {
+        return $this->_file['size'];
+    }
+
+    /**
+     * Validate file
+     *
+     * @return array
+     */
+    public function validateFile()
+    {
+        $this->_validateFile();
+        return $this->_file;
     }
 }

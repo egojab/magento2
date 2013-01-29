@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Magento_Test
  * @subpackage  integration_test
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -38,20 +38,12 @@ class Magento_Test_Profiler_OutputBamboo extends Magento_Profiler_Driver_Standar
     /**
      * Constructor
      *
-     * @param string $filename  Filename of the target file to write results to
-     * @param array  $metrics   Metrics to be included into result.
-     *                          Supported format: array(
-     *                              'metric name 1' => array(
-     *                                  'profiler key 1', ...
-     *                              ), ...
-     *                          );
-     * @param string $delimiter
-     * @param string $enclosure
+     * @param array|null $config
      */
-    public function __construct($filename, array $metrics, $delimiter = ',', $enclosure = '"')
+    public function __construct(array $config = null)
     {
-        parent::__construct($filename, $delimiter, $enclosure);
-        $this->_metrics = $metrics;
+        parent::__construct($config);
+        $this->_metrics = isset($config['metrics']) ? (array)$config['metrics'] : array();
     }
 
     /**

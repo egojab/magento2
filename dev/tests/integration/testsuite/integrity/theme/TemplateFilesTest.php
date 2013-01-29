@@ -21,13 +21,10 @@
  * @category    Magento
  * @package     Mage_Core
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-/**
- * @group integrity
- */
 class Integrity_Theme_TemplateFilesTest extends Magento_Test_TestCase_IntegrityAbstract
 {
     /**
@@ -63,7 +60,7 @@ class Integrity_Theme_TemplateFilesTest extends Magento_Test_TestCase_IntegrityA
         foreach ($themes as $theme) {
             $layoutUpdate = Mage::getModel(
                 'Mage_Core_Model_Layout_Merge',
-                array('arguments' => array('area' => $theme->getArea(), 'themeId' => $theme->getId()))
+                array('arguments' => array('area' => $theme->getArea(), 'theme' => $theme->getId()))
             );
             $layoutTemplates = $this->_getLayoutTemplates($layoutUpdate->getFileLayoutUpdatesXml());
             foreach ($layoutTemplates as $templateData) {

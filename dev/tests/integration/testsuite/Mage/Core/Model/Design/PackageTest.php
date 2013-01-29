@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Core
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -39,7 +39,10 @@ class Mage_Core_Model_Design_PackageTest extends PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
-        Varien_Io_File::rmdirRecursive(Mage::app()->getConfig()->getOptions()->getMediaDir() . '/theme');
+        $mediaDir = Mage::app()->getConfig()->getOptions()->getMediaDir();
+        $filesystem = Mage::getObjectManager()->create('Magento_Filesystem');
+        $filesystem->delete($mediaDir . '/theme/frontend');
+        $filesystem->delete($mediaDir . '/theme/_merged');
 
         $ioAdapter = new Varien_Io_File();
         $ioAdapter->cp(

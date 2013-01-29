@@ -20,7 +20,7 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class Mage_Core_Model_Validator_FactoryTest extends PHPUnit_Framework_TestCase
@@ -85,7 +85,7 @@ class Mage_Core_Model_Validator_FactoryTest extends PHPUnit_Framework_TestCase
 
         // Translate adapter mock
         $this->_translateAdapter = $this->getMockBuilder('Mage_Core_Model_Translate')
-            ->setConstructorArgs(array())
+            ->disableOriginalConstructor()
             ->setMethods(array('_getTranslatedString'))
             ->getMock();
         $this->_translateAdapter->expects($this->any())

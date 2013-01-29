@@ -21,13 +21,12 @@
  * @category    Magento
  * @package     Mage_Core
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * @magentoDbIsolation enabled
- * @group module::Mage_Layout_Merge
  */
 class Mage_Core_Model_Layout_MergeTest extends PHPUnit_Framework_TestCase
 {
@@ -52,7 +51,7 @@ class Mage_Core_Model_Layout_MergeTest extends PHPUnit_Framework_TestCase
         /* Disable loading and saving layout cache */
         Mage::app()->getCacheInstance()->banUse('layout');
         $this->_model = Mage::getModel('Mage_Core_Model_Layout_Merge', array(
-            'arguments' => array('area' => 'frontend', 'themeId' => Mage::getDesign()->getDesignTheme()->getId())
+            'arguments' => array('area' => 'frontend', 'theme' => Mage::getDesign()->getDesignTheme()->getId())
         ));
     }
 
@@ -225,7 +224,7 @@ class Mage_Core_Model_Layout_MergeTest extends PHPUnit_Framework_TestCase
         /** @var $model Mage_Core_Model_Layout_Merge */
         $model = Mage::getModel('Mage_Core_Model_Layout_Merge', array('arguments' => array(
             'area'       => 'frontend',
-            'themeId'    => $this->_themeUtility->getThemeByParams('test/test_theme', 'frontend')->getId()
+            'theme'    => $this->_themeUtility->getThemeByParams('test/test_theme', 'frontend')->getId()
         )));
         $this->assertNotContains($layoutHandle, $model->getHandles());
         $this->assertNotContains($expectedText, $model->asString());
@@ -247,7 +246,7 @@ class Mage_Core_Model_Layout_MergeTest extends PHPUnit_Framework_TestCase
 
         $model = Mage::getModel('Mage_Core_Model_Layout_Merge', array('arguments' => array(
             'area'    => 'frontend',
-            'themeId' => $this->_themeUtility->getThemeByParams('test/test_theme', 'frontend')->getId()
+            'theme' => $this->_themeUtility->getThemeByParams('test/test_theme', 'frontend')->getId()
         )));
         $model->load($layoutHandle);
         $this->assertContains($expectedTextThemeOne, $model->asString());
@@ -255,7 +254,7 @@ class Mage_Core_Model_Layout_MergeTest extends PHPUnit_Framework_TestCase
 
         $model = Mage::getModel('Mage_Core_Model_Layout_Merge', array('arguments' => array(
             'area'    => 'frontend',
-            'themeId' => $this->_themeUtility->getThemeByParams('test/cache_test_theme', 'frontend')->getId()
+            'theme' => $this->_themeUtility->getThemeByParams('test/cache_test_theme', 'frontend')->getId()
         )));
         $model->load($layoutHandle);
         $this->assertContains($expectedTextThemeTwo, $model->asString());

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -34,6 +34,19 @@
  */
 class Mage_Catalog_Helper_Product_Options extends Mage_Core_Helper_Abstract
 {
+    /**
+     * @var Magento_Filesystem
+     */
+    protected $_filesystem;
+
+    /**
+     * @param Magento_Filesystem $filesystem
+     */
+    public function __construct(Magento_Filesystem $filesystem)
+    {
+        $this->_filesystem = $filesystem;
+    }
+
     /**
      * Fetches and outputs file to user browser
      * $info is array with following indexes:
@@ -59,7 +72,7 @@ class Mage_Catalog_Helper_Product_Options extends Mage_Core_Helper_Abstract
                 ->clearBody();
             $response->sendHeaders();
 
-            readfile($filePath);
+            echo $this->_filesystem->read($filePath);
         } catch (Exception $e) {
             return false;
         }

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Install
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -54,10 +54,9 @@ class Mage_Install_Block_Download extends Mage_Install_Block_Abstract
     public function hasLocalCopy()
     {
         $dir = Mage::getConfig()->getModuleDir('etc', 'Mage_Adminhtml');
-        if ($dir && file_exists($dir)) {
+        if ($dir && $this->_filesystem->isDirectory($dir)) {
             return true;
         }
         return false;
     }
 }
-

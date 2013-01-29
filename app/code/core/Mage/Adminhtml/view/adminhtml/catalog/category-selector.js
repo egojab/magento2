@@ -19,7 +19,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 (function ($) {
@@ -88,14 +88,6 @@
             });
             $input.bind('ajaxSend ajaxComplete', function(e) {
                 e.stopPropagation();
-                switch (e.type) {
-                    case 'ajaxSend':
-                        $input.addClass('category-selector-active');
-                        break;
-                    case 'ajaxComplete':
-                        $input.removeClass('category-selector-active');
-                        break;
-                }
             });
             $input.autocomplete({
                 source: function(request, response) {
@@ -145,7 +137,7 @@
                         .text(item.label)
                         .css({marginLeft: level * 16})
                     );
-                if (window.parseInt(item.item.is_active, 10) == 0) {
+                if (window.parseInt(item.item.is_active, 10) === 0) {
                     $li.addClass('category-disabled');
                 }
                 if (elementPresent(item)) {

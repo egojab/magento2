@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -52,8 +52,10 @@ class Mage_Adminhtml_Block_System_Store_Delete extends Mage_Adminhtml_Block_Widg
 
         $this->_updateButton('delete', 'region', 'footer');
         $this->_updateButton('delete', 'onclick', null);
-        $this->_updateButton('delete', 'data_attr',
-            array('widget-button' => array('event' => 'save', 'related' => '#edit_form'))
+        $this->_updateButton('delete', 'data_attribute',
+            array('mage-init' => array(
+                'button' => array('event' => 'save', 'target' => '#edit_form'),
+            ))
         );
 
         $this->_addButton('cancel', array(

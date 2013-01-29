@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
@@ -55,14 +55,6 @@
             .addClass('validate-parent-category') // adjusting validation rules order
             .bind('ajaxSend ajaxComplete', function(e) {
                 e.stopPropagation();
-                switch (e.type) {
-                    case 'ajaxSend':
-                        $('#new_category_parent').addClass('parent-category-selector-active');
-                        break;
-                    case 'ajaxComplete':
-                        $('#new_category_parent').removeClass('parent-category-selector-active');
-                        break;
-                }
             })
             .autocomplete({
                 source: function(request, response) {

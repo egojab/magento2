@@ -20,23 +20,18 @@
  *
  * @category    Mage
  * @package     Mage_Install
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 class Mage_Install_Controller_Action extends Mage_Core_Controller_Varien_Action
 {
-    /**
-     * Currently used area
-     *
-     * @var string
-     */
-    protected $_currentArea = 'install';
-
     protected function _construct()
     {
         parent::_construct();
+
+        $this->setCurrentArea('install');
         $this->setFlag('', self::FLAG_NO_CHECK_INSTALLATION, true);
     }
 

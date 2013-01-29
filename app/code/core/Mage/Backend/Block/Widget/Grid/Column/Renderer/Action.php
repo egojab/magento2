@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Backend
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -138,7 +138,7 @@ class Mage_Backend_Block_Widget_Grid_Column_Renderer_Action
                     break;
 
                 case 'url':
-                    if (is_array($action['url'])) {
+                    if (is_array($action['url']) && isset($action['field'])) {
                         $params = array($action['field']=>$this->_getValue($row));
                         if (isset($action['url']['params'])) {
                             $params = array_merge($action['url']['params'], $params);

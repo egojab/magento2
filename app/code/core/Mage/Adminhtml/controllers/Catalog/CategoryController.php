@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -349,6 +349,9 @@ class Mage_Adminhtml_Catalog_CategoryController extends Mage_Adminhtml_Controlle
                 }
 
                 $category->unsetData('use_post_data_config');
+                if (isset($data['general']['entity_id'])) {
+                    throw new Mage_Core_Exception($this->__('Unable to save the category'));
+                }
 
                 $category->save();
                 $this->_getSession()->addSuccess(Mage::helper('Mage_Catalog_Helper_Data')->__('The category has been saved.'));

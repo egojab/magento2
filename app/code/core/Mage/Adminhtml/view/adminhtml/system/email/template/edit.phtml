@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
@@ -111,8 +111,9 @@
 </form>
 <script type="text/javascript">
 //<![CDATA[
-    jQuery('#email_template_edit_form').form().validation();
-    jQuery('#email_template_preview_form').form().validation();
+    jQuery('#email_template_edit_form').mage('form').mage('validation');
+    jQuery('#email_template_preview_form').mage('form').mage('validation');
+    jQuery('#email_template_load_form').mage('validation');
     var templateControl = {
         unconvertedText: '',
         typeChange: false,
@@ -183,9 +184,7 @@
 
         load: function() {
             // Temporary solution will be replaced after refactoring of email templates functionality
-            var form = jQuery('#email_template_load_form').validation();
-
-            if (!form.valid()) {
+            if (!jQuery('#email_template_load_form').valid()) {
                 return;
             }
 

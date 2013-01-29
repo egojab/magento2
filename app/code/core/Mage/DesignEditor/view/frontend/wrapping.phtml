@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     Mage_DesignEditor
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
@@ -28,23 +28,23 @@
 <?php
 $elementId = $this->getElementId();
 $elementHtml = $this->getElementHtml();
-$hideWrapping = $this->isHighlightingDisabled();
 $cssClass = 'vde_element_wrapper'
     . ($this->getIsManipulationAllowed() ? ' vde_draggable vde_removable' : '')
-    . ($this->getIsContainer() ? ' vde_container' : '')
-    . ($hideWrapping ? ' vde_wrapper_hidden' : '');
+    . ($this->getIsContainer() ? ' vde_container' : '');
 ?>
 <div id="<?php echo $elementId; ?>" class="<?php echo $cssClass; ?>" data-name="<?php echo $this->getElementName() ?>">
-    <div class="vde_element_title"><?php echo $this->getElementTitle() ?></div>
     <?php if ($this->getIsManipulationAllowed()): ?>
         <?php echo $this->getRemoveButton($elementId) ?>
     <?php endif; ?>
-    <?php if (!$hideWrapping) : ?>
-        <?php echo $elementHtml; ?>
-    <?php endif; ?>
-</div>
-<?php if ($hideWrapping && strlen($elementHtml)) : ?>
+    <div class="vde_element_title"><?php echo $this->getElementTitle() ?></div>
     <!--start_<?php echo $elementId; ?>-->
-    <?php echo $elementHtml; ?>
+    <?php if ($elementHtml) : ?>
+        <div><?php echo $elementHtml ?></div>
+    <?php elseif (!$this->getIsContainer()) : ?>
+        <div class="vde_placeholder_content">
+            <img src="<?php echo $this->getViewFileUrl('Mage_DesignEditor::images/block-placeholder.png') ?>"
+                 alt="<?php echo $this->__('Placeholder')?>" />
+        </div>
+    <?php endif ?>
     <!--end_<?php echo $elementId; ?>-->
-<?php endif;?>
+</div>

@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
@@ -70,5 +70,5 @@ $_rates = ( $_newRates ) ? $_newRates : $_oldRates;
     </div>
 </form>
 <script type="text/javascript">
-    jQuery('#rate-form').form().validation();
+    jQuery('#rate-form').mage('form').mage('validation');
 </script>

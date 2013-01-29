@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Backend
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -169,23 +169,23 @@ class Mage_Backend_Model_Config extends Varien_Object
      * @param string $groupId
      * @param array $groupData
      * @param array $groups
-     * @param string $path
+     * @param string $sectionPath
      * @param array $extraOldGroups
      * @param array $oldConfig
      * @param Mage_Core_Model_Resource_Transaction $saveTransaction
      * @param Mage_Core_Model_Resource_Transaction $deleteTransaction
      */
-    public function _processGroup(
+    protected function _processGroup(
         $groupId,
         array $groupData,
         array $groups,
-        $path,
+        $sectionPath,
         array &$extraOldGroups,
         array &$oldConfig,
         Mage_Core_Model_Resource_Transaction $saveTransaction,
         Mage_Core_Model_Resource_Transaction $deleteTransaction
     ) {
-        $groupPath = $path . '/' . $groupId;
+        $groupPath = $sectionPath . '/' . $groupId;
         $website = $this->getWebsite();
         $store = $this->getStore();
         $scope = $this->getScope();
@@ -258,10 +258,10 @@ class Mage_Backend_Model_Config extends Varien_Object
                     $configPath = $field->getConfigPath();
                     if (!empty($configPath) && strrpos($configPath, '/') > 0) {
                         // Extend old data with specified section group
-                        $groupPath = substr($configPath, 0, strrpos($configPath, '/'));
-                        if (!isset($extraOldGroups[$groupPath])) {
-                            $oldConfig = $this->extendConfig($groupPath, true, $oldConfig);
-                            $extraOldGroups[$groupPath] = true;
+                        $configGroupPath = substr($configPath, 0, strrpos($configPath, '/'));
+                        if (!isset($extraOldGroups[$configGroupPath])) {
+                            $oldConfig = $this->extendConfig($configGroupPath, true, $oldConfig);
+                            $extraOldGroups[$configGroupPath] = true;
                         }
                         $path = $configPath;
                     }

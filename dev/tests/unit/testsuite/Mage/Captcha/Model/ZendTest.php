@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Captcha
  * @subpackage  unit_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -231,10 +231,10 @@ class Mage_Captcha_Model_ZendTest extends PHPUnit_Framework_TestCase
      */
     protected function _getHelperStub()
     {
-        $helper = $this->getMock(
-            'Mage_Captcha_Helper_Data',
-            array('getConfigNode', 'getFonts', '_getWebsiteCode', 'getImgUrl')
-        );
+        $helper = $this->getMockBuilder('Mage_Captcha_Helper_Data')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getConfigNode', 'getFonts', '_getWebsiteCode', 'getImgUrl'))
+            ->getMock();
 
         $helper->expects($this->any())
             ->method('getConfigNode')

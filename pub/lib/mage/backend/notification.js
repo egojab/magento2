@@ -19,7 +19,7 @@
  *
  * @category    mage
  * @package     mage
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /*jshint jquery:true browser:true*/
@@ -46,14 +46,16 @@
          * Add new message
          * @protected
          * @param {Object} event object
-         * @param {Object} The jQuery XMLHttpRequest object returned by $.ajax()
+         * @param {Object} jqXHR The jQuery XMLHttpRequest object returned by $.ajax()
          * @param {Object}
          */
-        _add: function(e, jqXHR) {
-            var response = $.parseJSON(jqXHR.responseText);
-            if (response.error) {
-                this.element.append($.tmpl('globalNotification', response));
-            }
+        _add: function(event, jqXHR) {
+            try {
+                var response = $.parseJSON(jqXHR.responseText);
+                if (response && response.error) {
+                    this.element.append($.tmpl('globalNotification', response));
+                }
+            } catch(e) {}
         }
     });
 })(jQuery);

@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Catalog
  * @subpackage  unit_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -34,7 +34,8 @@ class Mage_Catalog_Model_Product_Type_SimpleTest extends PHPUnit_Framework_TestC
 
     protected function setUp()
     {
-        $this->_model = new Mage_Catalog_Model_Product_Type_Simple();
+        $filesystem = $this->getMockBuilder('Magento_Filesystem')->disableOriginalConstructor()->getMock();
+        $this->_model = new Mage_Catalog_Model_Product_Type_Simple($filesystem);
     }
 
     public function testHasWeightTrue()

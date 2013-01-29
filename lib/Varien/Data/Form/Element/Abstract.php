@@ -20,7 +20,7 @@
  *
  * @category   Varien
  * @package    Varien_Data
- * @copyright  Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright  Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36,6 +36,7 @@ abstract class Varien_Data_Form_Element_Abstract extends Varien_Data_Form_Abstra
 {
     protected $_id;
     protected $_type;
+    /** @var Varien_Data_Form */
     protected $_form;
     protected $_elements;
     protected $_renderer;
@@ -100,6 +101,11 @@ abstract class Varien_Data_Form_Element_Abstract extends Varien_Data_Form_Abstra
         return $this->_type;
     }
 
+    /**
+     * Get form
+     *
+     * @return Varien_Data_Form
+     */
     public function getForm()
     {
         return $this->_form;

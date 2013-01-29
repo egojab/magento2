@@ -21,7 +21,7 @@
  * @category    tests
  * @package     static
  * @subpackage  Legacy
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -267,6 +267,7 @@ return array(
     $this->_getRule('getStoreSelectOptions', 'Mage_Backend_Block_System_Config_Tabs'),
     $this->_getRule('getSuggestedZeroDate'),
     $this->_getRule('getSuggestionsByQuery'),
+    $this->_getRule('getSysTmpDir'),
     $this->_getRule('getTaxAmount', 'Mage_Sales_Model_Quote_Item_Abstract'),
     $this->_getRule('getTaxRatesByProductClass', null, '_getAllRatesByProductClass'),
     $this->_getRule('getTemplateFilename', null, 'getFilename'),
@@ -394,24 +395,24 @@ return array(
     $this->_getRule('getFileLayoutUpdatesXml', 'Mage_Core_Model_Layout_Update', 'Mage_Core_Model_Layout_Merge'),
     $this->_getRule('getContainers', 'Mage_Core_Model_Layout_Update', 'Mage_Core_Model_Layout_Merge'),
     $this->_getRule('getPostMaxSize', 'Mage_Adminhtml_Block_Media_Uploader',
-        'Mage_Core_Helper_File_Storage::getPostMaxSize()'),
+        'Magento_File_Size::getPostMaxSize()'),
     $this->_getRule('getUploadMaxSize', 'Mage_Adminhtml_Block_Media_Uploader',
-        'Mage_Core_Helper_File_Storage::getUploadMaxSize()'),
+        'Magento_File_Size::getUploadMaxSize()'),
     $this->_getRule('getDataMaxSize'),
     $this->_getRule('getDataMaxSizeInBytes', 'Mage_Adminhtml_Block_Media_Uploader',
-        'Mage_Core_Helper_File_Storage::getMaxFileSize()'),
+        'Magento_File_Size::getMaxFileSize()'),
     $this->_getRule('_getBytesIniValue', 'Mage_Catalog_Model_Product_Option_Type_File'),
     $this->_getRule('_getUploadMaxFilesize', 'Mage_Catalog_Model_Product_Option_Type_File'),
     $this->_getRule('_bytesToMbytes', 'Mage_Catalog_Model_Product_Option_Type_File'),
     $this->_getRule('getMaxUploadSize', 'Mage_ImportExport_Helper_Data', 'getMaxUploadSizeMessage'),
     $this->_getRule('prepareRedirect', 'Mage_Core_Controller_Varien_Exception'),
     $this->_getRule('getPostMaxSize', 'Mage_Adminhtml_Block_Media_Uploader',
-        'Mage_Core_Helper_File_Storage::getPostMaxSize()'),
+        'Magento_File_Size::getPostMaxSize()'),
     $this->_getRule('getUploadMaxSize', 'Mage_Adminhtml_Block_Media_Uploader',
-        'Mage_Core_Helper_File_Storage::getUploadMaxSize()'),
+        'Magento_File_Size::getUploadMaxSize()'),
     $this->_getRule('getDataMaxSize'),
     $this->_getRule('getDataMaxSizeInBytes', 'Mage_Adminhtml_Block_Media_Uploader',
-        'Mage_Core_Helper_File_Storage::getMaxFileSize()'),
+        'Magento_File_Size::getMaxFileSize()'),
     $this->_getRule('_getBytesIniValue', 'Mage_Catalog_Model_Product_Option_Type_File'),
     $this->_getRule('_getUploadMaxFilesize', 'Mage_Catalog_Model_Product_Option_Type_File'),
     $this->_getRule('_bytesToMbytes', 'Mage_Catalog_Model_Product_Option_Type_File'),

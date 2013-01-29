@@ -19,7 +19,7 @@
  *
  * @category    mage.js
  * @package     test
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 TranslateInlineTest = TestCase('TranslateInlineTest');
@@ -80,7 +80,7 @@ TranslateInlineTest.prototype.testTranslationFormTemplate = function() {
     translateInline.translateInline('destroy');
 };
 // @TODO Need to be fixed to avoid errors on the bamboo server in context of MAGETWO-5085 ticket
-TranslateInlineTest.prototype._testTranslateFormSubmit = function() {
+/*TranslateInlineTest.prototype._testTranslateFormSubmit = function() {
     FORM_KEY = 'form_key';
     var options = {
             ajaxUrl: 'www.test.com',
@@ -120,7 +120,7 @@ TranslateInlineTest.prototype._testTranslateFormSubmit = function() {
     assertEquals(true, ajaxParametersCorrect);
     assertEquals(true, dialog.is(':hidden'));
     translateInline.translateInline('destroy');
-};
+};*/
 TranslateInlineTest.prototype.testDestroy = function() {
     var options = {
             translateForm: {

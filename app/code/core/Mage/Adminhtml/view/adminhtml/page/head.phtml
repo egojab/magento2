@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     default_default
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
@@ -55,5 +55,6 @@
 </script>
 
 <?php echo $this->helper('Mage_Core_Helper_Js')->getTranslatorScript() ?>
+<?php echo $this->getChildHtml('components'); ?>
 <?php echo $this->getChildHtml('calendar'); ?>
 <?php echo $this->getChildHtml('optional_zip_countries'); ?>

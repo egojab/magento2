@@ -19,7 +19,7 @@
  *
  * @category    frontend poll
  * @package     mage
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /*jshint evil:true browser:true jquery:true*/
@@ -29,9 +29,9 @@
             var data = eval("(" + $(this).attr('data-mage-redirect') + ")");
             $(this).on(data.event, function () {
                 if (data.url) {
-                    $(location).attr('href', data.url);
+                    location.href = data.url;
                 } else {
-                    $(location).attr('href', $(this).val());
+                    location.href = $(this).val();
                 }
             });
         });

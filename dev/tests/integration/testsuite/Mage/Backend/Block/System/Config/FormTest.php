@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Magento_Backend
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -92,6 +92,38 @@ class Mage_Backend_Block_System_Config_FormTest extends PHPUnit_Framework_TestCa
         }
     }
 
+
+    /**
+     * @covers Mage_Backend_Block_System_Config_Form::initFields
+     * @param $section Mage_Backend_Model_Config_Structure_Element_Section
+     * @param $group Mage_Backend_Model_Config_Structure_Element_Group
+     * @param $field Mage_Backend_Model_Config_Structure_Element_Field
+     * @param array $configData
+     * @param bool $expectedUseDefault
+     * @dataProvider initFieldsInheritCheckboxDataProvider
+     * @magentoConfigFixture default/test_config_section/test_group_config_node/test_field_value config value
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function testInitFieldsUseConfigPath($section, $group, $field, array $configData, $expectedUseDefault)
+    {
+        Mage::getConfig()->setCurrentAreaCode('adminhtml');
+        $form = new Varien_Data_Form();
+        $fieldset = $form->addFieldset($section->getId() . '_' . $group->getId(), array());
+
+        /** @var $block Mage_Backend_Block_System_Config_FormStub */
+        $block = Mage::app()->getLayout()->createBlock('Mage_Backend_Block_System_Config_FormStub');
+        $block->setScope(Mage_Backend_Block_System_Config_Form::SCOPE_DEFAULT);
+        $block->setStubConfigData($configData);
+        $block->initFields($fieldset, $group, $section);
+
+        $fieldsetSel = 'fieldset';
+        $valueSel = sprintf('input#%s_%s_%s', $section->getId(), $group->getId(), $field->getId());
+        $fieldsetHtml = $fieldset->getElementHtml();
+
+        $this->assertSelectCount($fieldsetSel, true, $fieldsetHtml, 'Fieldset HTML is invalid');
+        $this->assertSelectCount($valueSel, true, $fieldsetHtml, 'Field input not found in fieldset HTML');
+    }
+
     /**
      * @return array
      */
@@ -104,6 +136,14 @@ class Mage_Backend_Block_System_Config_FormTest extends PHPUnit_Framework_TestCa
         $configMock->expects($this->any())->method('getModuleConfigurationFiles')
             ->will($this->returnValue(array(__DIR__ . '/_files/test_section_config.xml')));
         $configMock->expects($this->any())->method('getAreaConfig')->will($this->returnValue('adminhtml'));
+        $configMock->expects($this->any())
+            ->method('getModuleDir')
+            ->with('etc', 'Mage_Backend')
+            ->will(
+                $this->returnValue(
+                    realpath(__DIR__ . '/../../../../../../../../../app/code/core/Mage/Backend/etc')
+                )
+            );
 
         $structureReader = Mage::getSingleton('Mage_Backend_Model_Config_Structure_Reader',
             array('config' => $configMock)
@@ -124,11 +164,17 @@ class Mage_Backend_Block_System_Config_FormTest extends PHPUnit_Framework_TestCa
 
         $fieldPath = $field->getConfigPath();
 
+        /** @var Mage_Backend_Model_Config_Structure_Element_Field $field  */
+        $field2 = $structure->getElement('test_section/test_group/test_field_use_config');
+
+        $fieldPath2 = $field2->getConfigPath();
+
         return array(
             array($section, $group, $field, array(), true),
             array($section, $group, $field, array($fieldPath => null), false),
             array($section, $group, $field, array($fieldPath => ''), false),
             array($section, $group, $field, array($fieldPath => 'value'), false),
+            array($section, $group, $field2, array($fieldPath2 => 'config value'), true),
         );
     }
 
@@ -136,7 +182,9 @@ class Mage_Backend_Block_System_Config_FormTest extends PHPUnit_Framework_TestCa
     {
         Mage::getModel(
             'Mage_Core_Controller_Front_Action',
-            array('request' => Mage::app()->getRequest(), 'response' => Mage::app()->getResponse())
+            array('request' => Mage::app()->getRequest(), 'response' => Mage::app()->getResponse(),
+                'areaCode' => 'adminhtml'
+            )
         );
         Mage::app()->getRequest()->setParam('section', 'general');
         /** @var $block Mage_Backend_Block_System_Config_Form */

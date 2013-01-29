@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_ImportExport
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -59,6 +59,7 @@ class Mage_ImportExport_Block_Adminhtml_Import_Edit_Before extends Mage_Backend_
      * @param Mage_Core_Model_Store_Config $storeConfig
      * @param Mage_Core_Controller_Varien_Front $frontController
      * @param Mage_Core_Model_Factory_Helper $helperFactory
+     * @param Magento_Filesystem $filesystem
      * @param Mage_Core_Helper_Data $coreHelper
      * @param Mage_ImportExport_Model_Import $importModel
      * @param array $data
@@ -76,12 +77,13 @@ class Mage_ImportExport_Block_Adminhtml_Import_Edit_Before extends Mage_Backend_
         Mage_Core_Model_Store_Config $storeConfig,
         Mage_Core_Controller_Varien_Front $frontController,
         Mage_Core_Model_Factory_Helper $helperFactory,
+        Magento_Filesystem $filesystem,
         Mage_Core_Helper_Data $coreHelper,
         Mage_ImportExport_Model_Import $importModel,
         array $data = array()
     ) {
         parent::__construct($request, $layout, $eventManager, $urlBuilder, $translator, $cache, $designPackage,
-            $session, $storeConfig, $frontController, $helperFactory, $data
+            $session, $storeConfig, $frontController, $helperFactory, $filesystem, $data
         );
         $this->_coreHelper = $coreHelper;
         $this->_importModel = $importModel;

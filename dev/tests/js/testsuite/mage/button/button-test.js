@@ -19,29 +19,23 @@
  *
  * @category    mage.js
  * @package     test
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ButtonTest = TestCase('ButtonTest');
 ButtonTest.prototype.testInit = function() {
-    /*:DOC += <button id="test-button"></button><div id="event-target"></div>*/
+    /*:DOC += <button id="test-button"></button>*/
     assertTrue(jQuery('#test-button').button().is(':ui-button'));
 };
-ButtonTest.prototype.testProcessDataAttr = function() {
-    /*:DOC += <button id="test-button" data-widget-button="{&quot;event&quot;:&quot;testEvent&quot;,&quot;related&quot;:&quot;#event-target&quot;}"></button>
-        <div id="event-target"></div>*/
-    var button = jQuery('#test-button').button();
-    assertEquals('testEvent', button.button('option', 'event'));
-    assertEquals('#event-target', button.button('option', 'related'));
-};
 ButtonTest.prototype.testBind = function() {
-    /*:DOC += <button id="test-button" data-widget-button="{&quot;event&quot;:&quot;testEvent&quot;,&quot;related&quot;:&quot;#event-target&quot;}"></button>
-        <div id="event-target"></div>*/
+    /*:DOC += <button id="test-button"></button><div id="event-target"></div>*/
     var testEventTriggered = false;
     jQuery('#event-target').on('testEvent', function(e) {
         testEventTriggered = true;
     });
-    jQuery('#test-button').button().click();
-
+    jQuery('#test-button').button({
+        event: 'testEvent',
+        target: '#event-target'
+    }).click();
     assertTrue(testEventTriggered);
 };

@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Adminhtml
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -34,7 +34,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Helper_Form_Weight_RendererTest exten
     public function testIsVirtualChecked($type)
     {
         $currentProduct = Mage::getModel('Mage_Catalog_Model_Product');
-        $currentProduct->setTypeInstance(new $type);
+        $currentProduct->setTypeInstance(Mage::getObjectManager()->create($type));
 
         $block = new Mage_Adminhtml_Block_Catalog_Product_Helper_Form_Weight_Renderer();
 
@@ -64,7 +64,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Helper_Form_Weight_RendererTest exten
     public function testIsVirtualUnchecked($type)
     {
         $currentProduct = Mage::getModel('Mage_Catalog_Model_Product');
-        $currentProduct->setTypeInstance(new $type);
+        $currentProduct->setTypeInstance(Mage::getObjectManager()->create($type));
 
         $block = new Mage_Adminhtml_Block_Catalog_Product_Helper_Form_Weight_Renderer();
 

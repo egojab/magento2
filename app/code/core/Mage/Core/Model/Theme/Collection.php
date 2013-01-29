@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -49,6 +49,20 @@ class Mage_Core_Model_Theme_Collection extends Varien_Data_Collection
      * @var array
      */
     protected $_targetDirs = array();
+
+    /**
+     * @var Magento_Filesystem
+     */
+    protected $_filesystem;
+
+    /**
+     * @param Magento_Filesystem $filesystem
+     */
+    public function __construct(Magento_Filesystem $filesystem)
+    {
+        $this->_filesystem = $filesystem;
+        parent::__construct();
+    }
 
     /**
      * Retrieve collection empty item
@@ -158,7 +172,9 @@ class Mage_Core_Model_Theme_Collection extends Varien_Data_Collection
         foreach ($this->getTargetPatterns() as $directoryPath) {
             $pathsToThemeConfig = array_merge(
                 $pathsToThemeConfig,
-                glob($this->getBaseDir() . DIRECTORY_SEPARATOR . $directoryPath, GLOB_NOSORT)
+                str_replace('/', DIRECTORY_SEPARATOR,
+                    $this->_filesystem->searchKeys($this->getBaseDir(), $directoryPath)
+                )
             );
         }
 
@@ -254,7 +270,7 @@ class Mage_Core_Model_Theme_Collection extends Varien_Data_Collection
             'preview_image'        => $media['preview_image'] ? $media['preview_image'] : null,
             'magento_version_from' => $themeVersions['from'],
             'magento_version_to'   => $themeVersions['to'],
-            'is_featured'          => $themeConfig->getFeatured($packageCode, $themeCode),
+            'is_featured'          => $themeConfig->isFeatured($packageCode, $themeCode),
             'parent_theme_path'    => $parentTheme ? implode('/', $parentTheme) : null
         );
     }

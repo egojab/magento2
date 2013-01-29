@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36,10 +36,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_AttributeSet extends Mage_Backen
     protected function _prepareForm()
     {
         $form = new Varien_Data_Form();
-
-        $fieldset = $form->addFieldset('settings', array(
-            'legend' => Mage::helper('Mage_Catalog_Helper_Data')->__('Product Settings')
-        ));
+        $fieldset = $form->addFieldset('settings', array());
 
         $entityType = Mage::registry('product')->getResource()->getEntityType();
 
@@ -53,15 +50,10 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_AttributeSet extends Mage_Backen
                 ->load()
                 ->toOptionArray()
         ));
-
-        $fieldset->addField(
-            'type_id',
-            'hidden',
-            array(
-                'name' => 'type_id',
-                'value' => Mage::registry('product')->getTypeId(),
-            )
-        );
+        $fieldset->addField('type_id', 'hidden', array(
+            'name' => 'type_id',
+            'value' => Mage::registry('product')->getTypeId(),
+        ));
         $this->setForm($form);
     }
 }

@@ -19,7 +19,7 @@
  *
  * @category    mage.js
  * @package     test
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 LoaderTest = TestCase('LoaderTest');
@@ -30,12 +30,12 @@ LoaderTest.prototype.testInit = function() {
     loader.loader('destroy');
 };
 // @TODO Need to be fixed to avoid errors on the bamboo server in context of MAGETWO-5085 ticket
-LoaderTest.prototype._testCreateOnBeforeSend = function() {
+/*LoaderTest.prototype._testCreateOnBeforeSend = function() {
     /*:DOC += <div id="loader"></div> */
-    var loader = jQuery('#loader').trigger('ajaxSend');
+/*  var loader = jQuery('#loader').trigger('ajaxSend');
     assertEquals(true, loader.is(':mage-loader'));
     loader.loader('destroy');
-};
+};*/
 LoaderTest.prototype.testLoaderOnBody = function() {
     jQuery('body').loader();
     assertEquals(true, jQuery('body div:first').is('.loading-mask'));

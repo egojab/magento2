@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Widget
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -58,11 +58,11 @@ class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Chooser_LayoutTest extend
         )));
         $this->_block = $this->getMock(
             'Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Chooser_Layout',
-            array('_getLayoutUpdate'), $args
+            array('_getLayoutMerge'), $args
         );
         $this->_block
             ->expects($this->any())
-            ->method('_getLayoutUpdate')
+            ->method('_getLayoutMerge')
             ->will($this->returnValue($layoutUtility->getLayoutUpdateFromFixture(
             $pageTypesFixture,
             $layoutUtility->getLayoutDependencies()

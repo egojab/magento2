@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Magento_Catalog
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -49,11 +49,15 @@ class Mage_Catalog_Model_Product_Attribute_Backend_MediaTest extends PHPUnit_Fra
     public static function setUpBeforeClass()
     {
         self::$_mediaTmpDir = Mage::getSingleton('Mage_Catalog_Model_Product_Media_Config')->getBaseTmpMediaPath();
-        $fixtureDir        = realpath(dirname(__FILE__).'/../../../../_files');
-        self::$_mediaDir           = Mage::getSingleton('Mage_Catalog_Model_Product_Media_Config')->getBaseMediaPath();
+        $fixtureDir = realpath(dirname(__FILE__).'/../../../../_files');
+        self::$_mediaDir = Mage::getSingleton('Mage_Catalog_Model_Product_Media_Config')->getBaseMediaPath();
 
-        mkdir(self::$_mediaTmpDir, 0777, true);
-        mkdir(self::$_mediaDir, 0777, true);
+        if (!is_dir(self::$_mediaTmpDir)) {
+            mkdir(self::$_mediaTmpDir, 0777, true);
+        }
+        if (!is_dir(self::$_mediaDir)) {
+            mkdir(self::$_mediaDir, 0777, true);
+        }
 
         copy($fixtureDir . "/magento_image.jpg", self::$_mediaTmpDir . "/magento_image.jpg");
         copy($fixtureDir . "/magento_image.jpg", self::$_mediaDir . "/magento_image.jpg");

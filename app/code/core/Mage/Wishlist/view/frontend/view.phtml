@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     base_default
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /* @var $this Mage_Wishlist_Block_Customer_Wishlist */
@@ -52,22 +52,6 @@
             </fieldset>
         </form>
 
-        <script type="text/javascript">
-        //<![CDATA[
-        var wishlistForm = new Validation($('wishlist-view-form'));
-        function addAllWItemsToCart() {
-            var url = '<?php echo $this->getUrl('*/*/allcart', array('wishlist_id' => $this->getWishlistInstance()->getId())) ?>';
-            var separator = (url.indexOf('?') >= 0) ? '&' : '?';
-            $$('#wishlist-view-form .qty').each(
-                function (input, index) {
-                    url += separator + input.name + '=' + encodeURIComponent(input.value);
-                    separator = '&';
-                }
-            );
-            setLocation(url);
-        }
-        //]]>
-        </script>
     </div>
     <?php echo $this->getChildHtml('bottom'); ?>
     <div class="buttons-set">

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -132,16 +132,16 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute_Collection
     protected function _afterLoad()
     {
         parent::_afterLoad();
-        Magento_Profiler::start('TTT1:'.__METHOD__);
+        Magento_Profiler::start('TTT1:'.__METHOD__, array('group' => 'TTT1', 'method' => __METHOD__));
         $this->_addProductAttributes();
         Magento_Profiler::stop('TTT1:'.__METHOD__);
-        Magento_Profiler::start('TTT2:'.__METHOD__);
+        Magento_Profiler::start('TTT2:'.__METHOD__, array('group' => 'TTT2', 'method' => __METHOD__));
         $this->_addAssociatedProductFilters();
         Magento_Profiler::stop('TTT2:'.__METHOD__);
-        Magento_Profiler::start('TTT3:'.__METHOD__);
+        Magento_Profiler::start('TTT3:'.__METHOD__, array('group' => 'TTT3', 'method' => __METHOD__));
         $this->_loadLabels();
         Magento_Profiler::stop('TTT3:'.__METHOD__);
-        Magento_Profiler::start('TTT4:'.__METHOD__);
+        Magento_Profiler::start('TTT4:'.__METHOD__, array('group' => 'TTT4', 'method' => __METHOD__));
         $this->_loadPrices();
         Magento_Profiler::stop('TTT4:'.__METHOD__);
         return $this;
@@ -169,8 +169,9 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute_Collection
      */
     public function _addAssociatedProductFilters()
     {
-        $this->getProductType()
-            ->getUsedProducts($this->getProduct(), $this->getColumnValues('attribute_id')); // Filter associated products
+        $this->getProductType()->getUsedProducts(
+            $this->getProduct(), $this->getColumnValues('attribute_id') // Filter associated products
+        );
         return $this;
     }
 
@@ -198,7 +199,10 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute_Collection
                 ->from(array('def' => $this->_labelTable))
                 ->joinLeft(
                     array('store' => $this->_labelTable),
-                    $this->getConnection()->quoteInto('store.product_super_attribute_id = def.product_super_attribute_id AND store.store_id = ?', $this->getStoreId()),
+                    $this->getConnection()->quoteInto(
+                        'store.product_super_attribute_id = def.product_super_attribute_id AND store.store_id = ?',
+                        $this->getStoreId()
+                    ),
                     array(
                         'use_default' => $useDefaultCheck,
                         'label' => $labelCheck
@@ -314,7 +318,7 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute_Collection
     }
 
     /**
-     * Retrive product instance
+     * Retrieve product instance
      *
      * @return Mage_Catalog_Model_Product
      */

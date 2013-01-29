@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_DesignEditor
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -34,7 +34,8 @@ interface Mage_DesignEditor_Model_History_RendererInterface
      *
      * @abstract
      * @param Mage_DesignEditor_Model_Change_Collection $collection
+     * @param null $handle
      * @return string
      */
-    public function render(Mage_DesignEditor_Model_Change_Collection $collection);
+    public function render(Mage_DesignEditor_Model_Change_Collection $collection, $handle = null);
 }

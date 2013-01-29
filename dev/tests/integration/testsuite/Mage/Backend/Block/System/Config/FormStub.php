@@ -21,7 +21,7 @@
  * @category    Mage
  * @package     Mage_Backend
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36,6 +36,11 @@ class Mage_Backend_Block_System_Config_FormStub extends Mage_Backend_Block_Syste
     protected $_configDataStub = array();
 
     /**
+     * @var array
+     */
+    protected $_configRootStub = array();
+
+    /**
      * Sets stub config data
      *
      * @param array $configData
@@ -47,6 +52,17 @@ class Mage_Backend_Block_System_Config_FormStub extends Mage_Backend_Block_Syste
     }
 
     /**
+     * Sets stub config root
+     *
+     * @param array $configRoot
+     * @return void
+     */
+    public function setStubConfigRoot(array $configRoot = array())
+    {
+        $this->_configRootStub = $configRoot;
+    }
+
+    /**
      * Initialize properties of object required for test.
      *
      * @return Mage_Backend_Block_System_Config_Form
@@ -55,6 +71,9 @@ class Mage_Backend_Block_System_Config_FormStub extends Mage_Backend_Block_Syste
     {
         parent::_initObjects();
         $this->_configData = $this->_configDataStub;
+        if ($this->_configRootStub) {
+            $this->_configRoot = $this->_configRootStub;
+        }
         $this->_fieldRenderer = Mage::app()->getLayout()->createBlock(
             'Mage_Backend_Block_System_Config_Form_Field'
         );

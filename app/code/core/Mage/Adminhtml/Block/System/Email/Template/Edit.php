@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -61,6 +61,7 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit extends Mage_Adminhtml_Blo
      * @param Mage_Core_Model_Store_Config $storeConfig
      * @param Mage_Core_Controller_Varien_Front $frontController
      * @param Mage_Core_Model_Factory_Helper $helperFactory
+     * @param Magento_Filesystem $filesystem
      * @param Mage_Core_Model_Registry $registry
      * @param Mage_Backend_Model_Menu_Config $menuConfig
      * @param Mage_Backend_Model_Config_Structure $configStructure
@@ -80,6 +81,7 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit extends Mage_Adminhtml_Blo
         Mage_Core_Model_Store_Config $storeConfig,
         Mage_Core_Controller_Varien_Front $frontController,
         Mage_Core_Model_Factory_Helper $helperFactory,
+        Magento_Filesystem $filesystem,
         Mage_Core_Model_Registry $registry,
         Mage_Backend_Model_Menu_Config $menuConfig,
         Mage_Backend_Model_Config_Structure $configStructure,
@@ -87,8 +89,7 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit extends Mage_Adminhtml_Blo
     )
     {
         parent::__construct($request, $layout, $eventManager, $urlBuilder, $translator, $cache,
-            $designPackage, $session, $storeConfig, $frontController, $helperFactory, $data
-        );
+            $designPackage, $session, $storeConfig, $frontController, $helperFactory, $filesystem, $data);
         $this->_registryManager = $registry;
         $this->_menuConfig = $menuConfig;
         $this->_configStructure = $configStructure;

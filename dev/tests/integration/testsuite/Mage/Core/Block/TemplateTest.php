@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Core
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -137,7 +137,7 @@ class Mage_Core_Block_TemplateTest extends PHPUnit_Framework_TestCase
         $this->_block->setLayout($layout);
         $this->assertTrue($this->_block->getDirectOutput());
 
-        $this->assertEmpty($this->_block->fetchView(uniqid('invalid_filename.phtml')));
+        $this->assertEmpty($this->_block->fetchView(__DIR__ . DS . uniqid('invalid_filename.phtml')));
     }
 
     /**

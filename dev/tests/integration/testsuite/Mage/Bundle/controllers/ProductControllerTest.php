@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Bundle
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -49,6 +49,6 @@ class Mage_Bundle_ProductControllerTest extends Magento_Test_TestCase_Controller
         $this->assertEquals(1, $actualLinkCount, 'Bundle product options should appear on the page exactly once.');
         $this->assertNotContains('class="options-container-big"', $responseBody);
         $this->assertStringMatchesFormat('%Aclass="product-options" id="product-options-wrapper">%A'
-            . 'for="bundle-option-%Avar DateOption = Class.create({%A', $responseBody);
+            . 'for="bundle-option-%A', $responseBody);
     }
 }

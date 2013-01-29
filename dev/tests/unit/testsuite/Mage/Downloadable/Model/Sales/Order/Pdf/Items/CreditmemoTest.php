@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Downloadable
  * @subpackage  unit_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -45,7 +45,10 @@ class Mage_Downloadable_Model_Sales_Order_Pdf_Items_CreditmemoTest extends PHPUn
     protected function setUp()
     {
         $objectManager = new Magento_Test_Helper_ObjectManager($this);
-        $modelConstructorArgs = $objectManager->getConstructArguments(Magento_Test_Helper_ObjectManager::MODEL_ENTITY);
+        $modelConstructorArgs = $objectManager->getConstructArguments(
+            Magento_Test_Helper_ObjectManager::MODEL_ENTITY,
+            'Mage_Sales_Model_Order'
+        );
 
         $this->_order = $this->getMock('Mage_Sales_Model_Order', array('formatPriceTxt'), $modelConstructorArgs);
         $this->_order

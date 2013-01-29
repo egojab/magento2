@@ -20,7 +20,7 @@
  *
  * @category    design
  * @package     base_default
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -75,7 +75,7 @@ NOTE: Regarding styles - if we leave it this way, we'll move it to boxes.css
 ?>
     <?php echo $this->getSortedDateInputs() ?>
     <div class="dob-full" style="display:none;">
-        <input type="hidden" id="<?php echo $this->getFieldId('dob')?>" name="<?php echo $this->getFieldName('dob')?>" />
+        <input type="hidden" id="<?php echo $this->getFieldId('dob')?>" name="<?php echo $this->getFieldName('dob')?>" data-validate="{'validate-dob': ['.dob-day', '.dob-month', '.dob-year', <?php echo $this->isRequired() ? 'true' : 'false' ?>]}"/>
     </div>
 
     <div class="validation-advice" style="display:none;"></div>

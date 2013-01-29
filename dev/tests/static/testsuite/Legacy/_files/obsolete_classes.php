@@ -21,7 +21,7 @@
  * @category    tests
  * @package     static
  * @subpackage  Legacy
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 return array(
@@ -57,8 +57,14 @@ return array(
         'Mage_User_Model_Resource_Permissions_Collection'),
     $this->_getClassRule('Mage_Adminhtml_Block_Api_Edituser'),
     $this->_getClassRule('Mage_Adminhtml_Block_Api_Tab_Userroles'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Backup_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Block_Catalog'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Catalog_Product_Attribute_Set_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Catalog_Search_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Newsletter_Problem_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Newsletter_Queue_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Newsletter_Queue'),
     $this->_getClassRule('Mage_Adminhtml_Block_Page_Menu', 'Mage_Backend_Block_Menu'),
     $this->_getClassRule('Mage_Adminhtml_Block_Permissions_User'),
     $this->_getClassRule('Mage_Adminhtml_Block_Permissions_User_Grid'),
@@ -82,6 +88,7 @@ return array(
     $this->_getClassRule('Mage_Adminhtml_Block_Permissions_Edituser'),
     $this->_getClassRule('Mage_Adminhtml_Block_Permissions_Tab_Userroles'),
     $this->_getClassRule('Mage_Adminhtml_Block_Permissions_Usernroles'),
+    $this->_getClassRule('Mage_Adminhtml_Block_System_Store_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Permissions_UserController'),
     $this->_getClassRule('Mage_Adminhtml_Permissions_RoleController'),
     $this->_getClassRule('Mage_Adminhtml_Block_Report_Grid', 'Mage_Reports_Block_Adminhtml_Grid'),
@@ -92,6 +99,11 @@ return array(
     $this->_getClassRule('Mage_Adminhtml_Block_Report_Customer_Totals_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Block_Report_Product_Sold', 'Mage_Reports_Block_Adminhtml_Product_Sold'),
     $this->_getClassRule('Mage_Adminhtml_Block_Report_Product_Sold_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Report_Review_Customer_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Report_Review_Product_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Report_Refresh_Statistics',
+        'Mage_Reports_Block_Adminhtml_Refresh_Statistics'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Report_Refresh_Statistics_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Block_Report_Customer_Orders', 'Mage_Reports_Block_Adminhtml_Customer_Orders'),
     $this->_getClassRule('Mage_Adminhtml_Block_Report_Customer_Orders_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Block_Report_Product_Ordered'),
@@ -102,14 +114,11 @@ return array(
     $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Form', 'Mage_Backend_Block_System_Config_Form'),
     $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Tabs', 'Mage_Backend_Block_System_Config_Tabs'),
     $this->_getClassRule('Mage_Adminhtml_Block_System_Config_System_Storage_Media_Synchronize',
-        'Mage_Backend_Block_System_Config_System_Storage_Media_Synchronize'
-    ),
+        'Mage_Backend_Block_System_Config_System_Storage_Media_Synchronize'),
     $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Form_Fieldset_Modules_DisableOutput',
-        'Mage_Backend_Block_System_Config_Form_Fieldset_Modules_DisableOutput'
-    ),
+        'Mage_Backend_Block_System_Config_Form_Fieldset_Modules_DisableOutput'),
     $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Form_Field_Regexceptions',
-        'Mage_Backend_Block_System_Config_Form_Field_Regexceptions'
-    ),
+        'Mage_Backend_Block_System_Config_Form_Field_Regexceptions'),
     $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Form_Field_Notification',
         'Mage_Backend_Block_System_Config_Form_Field_Notification'
     ),
@@ -151,9 +160,10 @@ return array(
     ),
     $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Form_Fieldset_Order_Statuses',
         'Mage_Sales_Block_Adminhtml_System_Config_Form_Fieldset_Order_Statuses'
-    ),
-    $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Dwstree', 'Mage_Backend_Block_System_Config_Dwstree'),
+    ), $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Dwstree', 'Mage_Backend_Block_System_Config_Dwstree'),
     $this->_getClassRule('Mage_Adminhtml_Block_System_Config_Switcher', 'Mage_Backend_Block_System_Config_Switcher'),
+    $this->_getClassRule('Mage_Adminhtml_Block_System_Design_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_System_Email_Template_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Block_Store_Switcher', 'Mage_Backend_Block_Store_Switcher'),
     $this->_getClassRule('Mage_Adminhtml_Block_Store_Switcher_Form_Renderer_Fieldset',
         'Mage_Backend_Block_Store_Switcher_Form_Renderer_Fieldset'
@@ -161,9 +171,13 @@ return array(
     $this->_getClassRule('Mage_Adminhtml_Block_Store_Switcher_Form_Renderer_Fieldset_Element',
         'Mage_Backend_Block_Store_Switcher_Form_Renderer_Fieldset_Element'
     ),
+    $this->_getClassRule('Mage_Adminhtml_Block_Sitemap_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Block_Tag_Tag_Edit'),
     $this->_getClassRule('Mage_Adminhtml_Block_Tag_Tag_Edit_Form'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Tax_Rate_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Block_Tree'),
+    $this->_getClassRule('Mage_Adminhtml_Block_Urlrewrite_Grid'),
+    $this->_getClassRule('Mage_Adminhtml_Block_System_Variable_Grid'),
     $this->_getClassRule('Mage_Adminhtml_Helper_Rss'),
     $this->_getClassRule('Mage_Adminhtml_Model_Config', 'Mage_Backend_Model_Config_Structure'),
     $this->_getClassRule('Mage_Adminhtml_Model_Config_Data', 'Mage_Backend_Model_Config'),
@@ -570,8 +584,7 @@ return array(
         'Mage_GoogleOptimizer_Adminhtml_Googleoptimizer_IndexController'),
     $this->_getClassRule('Mage_ImportExport_Model_Import_Adapter_Abstract',
         'Mage_ImportExport_Model_Import_SourceAbstract'),
-    $this->_getClassRule('Mage_ImportExport_Model_Import_Adapter_Csv',
-        'Mage_ImportExport_Model_Import_Source_Csv'),
+    $this->_getClassRule('Mage_ImportExport_Model_Import_Adapter_Csv', 'Mage_ImportExport_Model_Import_Source_Csv'),
     $this->_getClassRule('Mage_Ogone_Model_Api_Debug'),
     $this->_getClassRule('Mage_Ogone_Model_Resource_Api_Debug'),
     $this->_getClassRule('Mage_Page_Block_Html_Toplinks'),
@@ -659,6 +672,8 @@ return array(
     $this->_getClassRule('Mage_Sales_Model_Entity_Setup'),
     $this->_getClassRule('Mage_Shipping_ShippingController'),
     $this->_getClassRule('Mage_Tag_Block_Customer_Edit'),
+    $this->_getClassRule('Mage_User_Block_Role_Grid'),
+    $this->_getClassRule('Mage_User_Block_User_Grid'),
     $this->_getClassRule('Mage_User_Model_Roles'),
     $this->_getClassRule('Mage_User_Model_Resource_Roles'),
     $this->_getClassRule('Mage_User_Model_Resource_Roles_Collection'),

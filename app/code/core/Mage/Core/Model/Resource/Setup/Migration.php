@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -139,13 +139,20 @@ class Mage_Core_Model_Resource_Setup_Migration extends Mage_Core_Model_Resource_
     protected $_compositeModules;
 
     /**
+     * @var Magento_Filesystem
+     */
+    protected $_filesystem;
+
+    /**
      * Constructor
      *
      * @param string $resourceName
+     * @param Magento_Filesystem $filesystem
      * @param array $data
      */
-    public function __construct($resourceName, array $data = array())
+    public function __construct($resourceName, Magento_Filesystem $filesystem, array $data = array())
     {
+        $this->_filesystem = $filesystem;
         if (!isset($data['resource_config'])
             || !isset($data['connection_config'])
             || !isset($data['module_config'])
@@ -680,8 +687,8 @@ class Mage_Core_Model_Resource_Setup_Migration extends Mage_Core_Model_Resource_
     protected function _loadMap($pathToMapFile)
     {
         $pathToMapFile = $this->_baseDir . DS . $pathToMapFile;
-        if (file_exists($pathToMapFile)) {
-            return file_get_contents($pathToMapFile);
+        if ($this->_filesystem->isFile($pathToMapFile)) {
+            return $this->_filesystem->read($pathToMapFile);
         }
 
         return '';

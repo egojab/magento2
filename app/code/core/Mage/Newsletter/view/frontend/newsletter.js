@@ -19,7 +19,7 @@
  *
  * @category    frontend newsletter
  * @package     mage
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /*jshint browser:true jquery:true*/
@@ -30,7 +30,7 @@
         },
         _create: function() {
             $(this.options.formSelector)
-                .mage().validate({ errorClass: this.options.errorClass });
+                .validation({errorClass: this.options.errorClass});
             this.element.on('click', $.proxy(function(e) {
                if ($(e.target).val() === this.options.placeholder) {
                    $(e.target).val('');

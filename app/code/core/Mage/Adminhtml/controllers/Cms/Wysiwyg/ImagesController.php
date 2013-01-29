@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -128,11 +128,12 @@ class Mage_Adminhtml_Cms_Wysiwyg_ImagesController extends Mage_Adminhtml_Control
             $path = $this->getStorage()->getSession()->getCurrentPath();
             foreach ($files as $file) {
                 $file = $helper->idDecode($file);
-                $_filePath = realpath($path . DS . $file);
-                if (strpos($_filePath, realpath($path)) === 0 &&
-                    strpos($_filePath, realpath($helper->getStorageRoot())) === 0
-                ) {
-                    $this->getStorage()->deleteFile($path . DS . $file);
+                $_filePath = $path . DS . $file;
+                /** @var Magento_Filesystem $filesystem */
+                $filesystem = $this->_objectManager->get('Magento_Filesystem');
+                $filesystem->setWorkingDirectory($helper->getStorageRoot());
+                if ($filesystem->isFile($_filePath)) {
+                    $this->getStorage()->deleteFile($_filePath);
                 }
             }
         } catch (Exception $e) {

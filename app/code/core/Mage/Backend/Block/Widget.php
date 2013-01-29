@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Backend
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -36,7 +36,7 @@ class Mage_Backend_Block_Widget extends Mage_Backend_Block_Template
     public function getId()
     {
         if ($this->getData('id')===null) {
-            $this->setData('id', Mage::helper('Mage_Core_Helper_Data')->uniqHash('id_'));
+            $this->setData('id', $this->_helperFactory->get('Mage_Core_Helper_Data')->uniqHash('id_'));
         }
         return $this->getData('id');
     }

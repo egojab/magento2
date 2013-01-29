@@ -19,7 +19,7 @@
  *
  * @category    mage
  * @package     mage
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /*jshint jquery:true browser:true*/
@@ -92,9 +92,10 @@
                 type: 'POST',
                 dataType: 'json',
                 data: this.element.serialize(),
-                context: this,
-                success: this._onSuccess,
-                error: this._onError
+                context: $('body'),
+                success: $.proxy(this._onSuccess, this),
+                error: $.proxy(this._onError, this),
+                showLoader: true
             });
         },
 
@@ -106,11 +107,18 @@
          * @param {Object} The jQuery XMLHttpRequest object returned by $.ajax()
          */
         _onSuccess: function(response) {
+            var attributes = response.attributes || {};
             if (response.attribute) {
-                $('#' + response.attribute)
-                    .addClass('validate-ajax-error')
-                    .data('msg-validate-ajax-error', response.message);
-                this.validate.element( "#" + response.attribute);
+                attributes[response.attribute] = response.message;
+            }
+
+            for (var attributeCode in attributes) {
+                if (attributes.hasOwnProperty(attributeCode)) {
+                    $('#' + attributeCode)
+                        .addClass('validate-ajax-error')
+                        .data('msg-validate-ajax-error', attributes[attributeCode]);
+                    this.validate.element("#" + attributeCode);
+                }
             }
             if (!response.error) {
                 this.element[0].submit();

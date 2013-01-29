@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Core
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -59,6 +59,12 @@ class Mage_Core_Model_AppTest extends PHPUnit_Framework_TestCase
         $this->_mageModel = null;
     }
 
+    /**
+     * @covers Mage_Core_Model_App::_initCache
+     *
+     * @magentoConfigFixture global/cache/id_prefix test
+     * @magentoAppIsolation enabled
+     */
     public function testInit()
     {
         $this->assertNull($this->_model->getConfig());
@@ -66,6 +72,12 @@ class Mage_Core_Model_AppTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Mage_Core_Model_Config', $this->_model->getConfig());
         $this->assertNotEmpty($this->_model->getConfig()->getNode());
         $this->assertContains(Mage_Core_Model_App::ADMIN_STORE_ID, array_keys($this->_model->getStores(true)));
+
+        // Check that we have shared cache object inside of object manager
+        $objectManager = Mage::getObjectManager();
+        /** @var $cache Mage_Core_Model_Cache */
+        $cache = $objectManager->get('Mage_Core_Model_Cache');
+        $this->assertAttributeEquals('test', '_idPrefix', $cache);
     }
 
     /**
@@ -81,6 +93,25 @@ class Mage_Core_Model_AppTest extends PHPUnit_Framework_TestCase
         $this->_mageModel->getRequest()->setRequestUri('core/index/index');
         $this->_mageModel->run(array());
         $this->assertTrue($this->_mageModel->getRequest()->isDispatched());
+    }
+
+    public function testIsInstalled()
+    {
+        $this->assertTrue($this->_mageModel->isInstalled());
+    }
+
+    /**
+     * @magentoAppIsolation enabled
+     * @expectedException Magento_Exception
+     * @expectedExceptionMessage Application is not installed yet, please complete the installation first.
+     */
+    public function testRequireInstalledInstance()
+    {
+        $this->_model->baseInit(array(
+            Mage_Core_Model_Config::OPTION_LOCAL_CONFIG_EXTRA_DATA
+                => sprintf(Mage_Core_Model_Config::CONFIG_TEMPLATE_INSTALL_DATE, 'invalid')
+        ));
+        $this->_model->requireInstalledInstance();
     }
 
     public function testGetCookie()
@@ -222,13 +253,6 @@ class Mage_Core_Model_AppTest extends PHPUnit_Framework_TestCase
         $this->assertSame($locale, $this->_model->getLocale());
     }
 
-    public function testGetLayout()
-    {
-        $layout = $this->_mageModel->getLayout();
-        $this->assertInstanceOf('Mage_Core_Model_Layout', $layout);
-        $this->assertSame($layout, $this->_mageModel->getLayout());
-    }
-
     public function testGetTranslator()
     {
         $translate = $this->_model->getTranslator();
@@ -362,5 +386,18 @@ class Mage_Core_Model_AppTest extends PHPUnit_Framework_TestCase
         $groups = $this->_mageModel->getGroups();
         $this->assertInternalType('array', $groups);
         $this->assertGreaterThanOrEqual(1, count($groups));
+    }
+
+    /**
+     * @magentoConfigFixture global/di/preferences/Mage_Core_Model_Url Mage_Backend_Model_Url
+     * @magentoConfigFixture frontend/di/preferences/Mage_Core_Model_Url Mage_DesignEditor_Model_Url_NavigationMode
+     */
+    public function testLoadDiConfiguration()
+    {
+        $objectManager = Mage::getObjectManager();
+        $this->_model  = $objectManager->get('Mage_Core_Model_App');
+        $this->_model->loadDiConfiguration('frontend');
+        $testInstance  = $objectManager->create('Mage_Backend_Block_Widget_Grid_ColumnSet');
+        $this->assertAttributeInstanceOf('Mage_DesignEditor_Model_Url_NavigationMode', '_urlBuilder', $testInstance);
     }
 }

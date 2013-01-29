@@ -20,16 +20,18 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class Magento_Profiler_Driver_Standard_Output_Csvfile extends Magento_Profiler_Driver_Standard_OutputAbstract
 {
+    const DEFAULT_FILEPATH = '/var/log/profiler.csv';
+
     /**
      *
      * @var string
      */
-    protected $_filename;
+    protected $_filePath;
 
     /**
      * @var string
@@ -44,15 +46,33 @@ class Magento_Profiler_Driver_Standard_Output_Csvfile extends Magento_Profiler_D
     /**
      * Constructor
      *
-     * @param string $filename Target file to save CSV data
-     * @param string $delimiter Delimiter for CSV format
-     * @param string $enclosure Enclosure for CSV format
+     * @param array|null $config
      */
-    public function __construct($filename, $delimiter = ',', $enclosure = '"')
+    public function __construct(array $config = null)
     {
-        $this->_filename = $filename;
-        $this->_delimiter = $delimiter;
-        $this->_enclosure = $enclosure;
+        parent::__construct($config);
+        $this->_filePath = $this->_parseFilePath($config);
+        $this->_delimiter = isset($config['delimiter']) ? $config['delimiter'] : ',';
+        $this->_enclosure = isset($config['enclosure']) ? $config['enclosure'] : '"';
+    }
+
+    /**
+     * Parses file path
+     *
+     * @param array|null $config
+     * @return string
+     */
+    protected function _parseFilePath(array $config = null)
+    {
+        $result = isset($config['filePath']) ? $config['filePath'] : self::DEFAULT_FILEPATH;
+        $result = str_replace(array('\\', '/'), DIRECTORY_SEPARATOR, $result);
+
+        if (isset($config['baseDir'])) {
+            $result = rtrim($config['baseDir'], DIRECTORY_SEPARATOR)
+                . DIRECTORY_SEPARATOR
+                . ltrim($result, DIRECTORY_SEPARATOR);
+        }
+        return $result;
     }
 
     /**
@@ -63,12 +83,12 @@ class Magento_Profiler_Driver_Standard_Output_Csvfile extends Magento_Profiler_D
      */
     public function display(Magento_Profiler_Driver_Standard_Stat $stat)
     {
-        $fileHandle = fopen($this->_filename, 'w');
+        $fileHandle = fopen($this->_filePath, 'w');
         if (!$fileHandle) {
-            throw new RuntimeException(sprintf('Can not open a file "%s".', $this->_filename));
+            throw new RuntimeException(sprintf('Can not open a file "%s".', $this->_filePath));
         }
 
-        $lockRequired = (strpos($this->_filename, 'php://') !== 0);
+        $lockRequired = (strpos($this->_filePath, 'php://') !== 0);
         $isLocked = false;
         while ($lockRequired && !$isLocked) {
             $isLocked = flock($fileHandle, LOCK_EX);

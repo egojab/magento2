@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Mage_Core
  * @subpackage  integration_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -68,9 +68,10 @@ class Mage_Core_Model_Design_PackagePublicationTest extends PHPUnit_Framework_Te
 
     protected function tearDown()
     {
-        Varien_Io_File::rmdirRecursive(self::$_themePublicDir);
-        Varien_Io_File::rmdirRecursive(self::$_fixtureTmpDir);
-        $this->_model = null;
+        $filesystem = Mage::getObjectManager()->create('Magento_Filesystem');
+        $filesystem->delete(self::$_fixtureTmpDir);
+        $filesystem->delete(self::$_themePublicDir . '/adminhtml');
+        $filesystem->delete(self::$_themePublicDir . '/frontend');
     }
 
     /**
@@ -265,6 +266,7 @@ class Mage_Core_Model_Design_PackagePublicationTest extends PHPUnit_Framework_Te
     public function testPublishViewFile($file, $designParams, $expectedFile)
     {
         $expectedFile = self::$_themePublicDir . '/' . $expectedFile;
+        $this->_deleteFiles[] = $expectedFile;
 
         // test doesn't make sense if the original file doesn't exist or the target file already exists
         $originalFile = $this->_model->getViewFile($file, $designParams);

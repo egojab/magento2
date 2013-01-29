@@ -20,7 +20,7 @@
  * versions in the future. If you wish to customize Magento for your
  * needs please refer to http://www.magentocommerce.com for more information.
  *
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *
  * @method Varien_Object getApiUser() getApiUser()
@@ -52,12 +52,13 @@ class Mage_Webapi_Block_Adminhtml_User_Edit extends Mage_Backend_Block_Widget_Fo
 
         $this->_addButton('save_and_continue', array(
             'label' => $this->__('Save and Continue Edit'),
-            'onclick' => 'saveAndContinueEdit()',
-            'class' => 'save'
+            'class' => 'save',
+            'data_attribute'  => array(
+                'mage-init' => array(
+                    'button' => array('event' => 'saveAndContinueEdit', 'target' => '#edit_form'),
+                ),
+            ),
         ), 100);
-
-        $this->_formScripts[] = "function saveAndContinueEdit()"
-            . "{editForm.submit($('edit_form').action + 'back/edit/')}";
 
         $this->_updateButton('save', 'label', $this->__('Save API User'));
         $this->_updateButton('save', 'id', 'save_button');

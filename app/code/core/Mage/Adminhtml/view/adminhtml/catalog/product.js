@@ -19,7 +19,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -53,10 +53,11 @@ Product.Gallery.prototype = {
                 '(^|.|\\r|\\n)(__([a-zA-Z0-9_]+)__)', ''));
         this.fixParentTable();
         this.updateImages();
-        varienGlobalEvents.attachEventHandler('moveTab', this.onImageTabMove
-                .bind(this));
+        jQuery('#' + this.containerId)
+            .closest('.ui-tabs-panel')
+            .on('move.tabs', jQuery.proxy(this.onImageTabMove, this));
     },
-    onImageTabMove : function(event) {
+    onImageTabMove : function(event, tab) {
         var imagesTab = false;
         this.container.ancestors().each( function(parentItem) {
             if (parentItem.tabObject) {
@@ -65,7 +66,7 @@ Product.Gallery.prototype = {
             }
         }.bind(this));
 
-        if (imagesTab && event.tab && event.tab.name && imagesTab.name == event.tab.name) {
+        if (imagesTab && tab && tab.name && imagesTab.name === tab.name) {
             this.container.select('input[type="radio"]').each(function(radio) {
                 radio.observe('change', this.onChangeRadio);
             }.bind(this));
@@ -270,18 +271,10 @@ Product.AttributesBridge = {
     getAttributes : function(tabId) {
         return this.bindTabs2Attributes[tabId];
     },
-    setTabsObject : function(tabs) {
-        this.tabsObject = tabs;
-    },
-    getTabsObject : function() {
-        return this.tabsObject;
-    },
     addAttributeRow : function(data) {
-        $H(data).each( function(item) {
-            if (this.getTabsObject().activeTab.name != item.key) {
-                this.getTabsObject().showTabContent($(item.key));
-            }
-            this.getAttributes(item.key).addRow(item.value);
+        $H(data).each(function(item) {
+            var element = this.getAttributes(item.key).addRow(item.value);
+            jQuery(element).trigger('focus');
         }.bind(this));
     }
 };
@@ -318,6 +311,7 @@ Product.Attributes.prototype = {
             window.scrollTo(0, Position.cumulativeOffset(element)[1]
                     + element.offsetHeight);
         }
+        return element;
     }
 };
 
@@ -753,91 +747,6 @@ Product.Configurable.prototype = {
             });
         });
         $(this.idPrefix + 'simple_form').advicesInited = true;
-    },
-    quickCreateNewProduct : function() {
-        this.initializeAdvicesForSimpleForm();
-        $(this.idPrefix + 'simple_form').removeClassName('ignore-validate');
-        var validationResult = $(this.idPrefix + 'simple_form').select('input',
-                'select', 'textarea').collect( function(elm) {
-            return Validation.validate(elm, {
-                useTitle :false,
-                onElementValidate : function() {
-                }
-            });
-        }).all();
-        $(this.idPrefix + 'simple_form').addClassName('ignore-validate');
-
-        if (!validationResult) {
-            return;
-        }
-
-        var params = Form.serializeElements($(this.idPrefix + 'simple_form')
-                .select('input', 'select', 'textarea'), true);
-        params.form_key = FORM_KEY;
-        $('messages').update();
-        new Ajax.Request(this.createQuickUrl, {
-            parameters :params,
-            method :'post',
-            area :$(this.idPrefix + 'simple_form'),
-            onComplete :this.quickCreateNewProductComplete.bind(this)
-        });
-    },
-    quickCreateNewProductComplete : function(transport) {
-        var result = transport.responseText.evalJSON();
-
-        if (result.error) {
-            if (result.error.fields) {
-                $(this.idPrefix + 'simple_form').removeClassName(
-                        'ignore-validate');
-                $H(result.error.fields)
-                        .each(
-                                function(pair) {
-                                    $('simple_product_' + pair.key).value = pair.value;
-                                    $('simple_product_' + pair.key + '_autogenerate').checked = false;
-                                    toggleValueElements(
-                                            $('simple_product_' + pair.key + '_autogenerate'),
-                                            $('simple_product_' + pair.key + '_autogenerate').parentNode);
-                                    Validation.ajaxError(
-                                            $('simple_product_' + pair.key),
-                                            result.error.message);
-                                });
-                $(this.idPrefix + 'simple_form')
-                        .addClassName('ignore-validate');
-            } else {
-                if (result.error.message) {
-                    alert(result.error.message);
-                } else {
-                    alert(result.error);
-                }
-            }
-            return;
-        } else if (result.messages) {
-            $('messages').update(result.messages);
-        }
-
-        result.attributes
-                .each( function(attribute) {
-                    var attr = this.getAttributeById(attribute.attribute_id);
-                    if (!this.getValueByIndex(attr, attribute.value_index)
-                            && result.pricing
-                            && result.pricing[attr.attribute_code]) {
-
-                        attribute.is_percent = result.pricing[attr.attribute_code].is_percent;
-                        attribute.pricing_value = (result.pricing[attr.attribute_code].value == null ? ''
-                                : result.pricing[attr.attribute_code].value);
-                    }
-                }.bind(this));
-
-        this.attributes.each( function(attribute) {
-            if ($('simple_product_' + attribute.attribute_code)) {
-                $('simple_product_' + attribute.attribute_code).value = '';
-            }
-        }.bind(this));
-
-        this.links.set(result.product_id, result.attributes);
-        this.updateGrid();
-        this.updateValues();
-        this.grid.reload();
     },
     checkCreationUniqueAttributes : function() {
         var attributes = [];

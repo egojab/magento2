@@ -21,7 +21,7 @@
  * @category    Magento
  * @package     Magento
  * @subpackage  static_tests
- * @copyright   Copyright (c) 2012 X.commerce, Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2013 X.commerce, Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -92,7 +92,6 @@ class CodingStandard_Tool_CodeSniffer implements CodingStandard_ToolInterface
         $blackList = array_map(function($item) {
             return preg_quote(str_replace('/', DIRECTORY_SEPARATOR, $item));
         }, $blackList);
-
 
         $this->_wrapper->checkRequirements();
         $settings = $this->_wrapper->getDefaults();
